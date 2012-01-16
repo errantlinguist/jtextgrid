@@ -1,0 +1,9 @@
+TextGridJava
+Library for processing Praat TextGrid files in Java.
+------------------------------------------------------------------------
+VERSION: 2012-01-16
+AUTHOR: Todd Shore
+WEBSITE: https://github.com/errantlinguist/textgridjava
+
+LICENSING:
+Apache License 2.0 -- See the files "NOTICE" and "LICENSE"
