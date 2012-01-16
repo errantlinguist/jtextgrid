@@ -30,11 +30,11 @@ import java.util.Map;
  * @version 2012-01-16
  * @since 2011-07-06
  * 
- * @param <T>
+ * @param <D>
  *            The object type representing the data denoted by the tier entries.
  */
-public class TextGridTier<T> extends
-		TimeSeriesDataCollection<TextGridEntry<T>, TextGridTier<T>> {
+public class TextGridTier<D> extends
+		TimeSeriesDataCollection<TextGridEntry<D>, TextGridTier<D>> {
 
 	/**
 	 * The TextGrid tier class, e.g.&nbsp;"IntervalTier" or "TextTier", as
@@ -113,55 +113,8 @@ public class TextGridTier<T> extends
 
 	}
 
-	// /**
-	// * Forcibly increases the size of a given {@link ArrayList} to enable
-	// adding
-	// * a new element with a given index by adding null references for each
-	// index
-	// * between the end of the <code>ArrayList</code> and the given index.
-	// *
-	// * @param <T>
-	// * The type of the elements in the <code>ArrayList</code>.
-	// * @param list
-	// * The <code>ArrayList</code> to increase the size of
-	// * @param index
-	// * The index to expand the <code>ArrayList</code> to.
-	// */
-	// private static final <T> void extendToIndex(final ArrayList<T> list,
-	// final int index) {
-	// list.ensureCapacity(index + 1);
-	// while (list.size() <= index) {
-	// list.add(null);
-	// }
-	// }
+	private final TextGridFile<D> file;
 
-	// /**
-	// * A {@link ArrayList} of all {@link TextGridEntry} objects, where the
-	// index
-	// * is the entry ID.
-	// */
-	// private final ArrayList<TextGridEntry<T>> entries;
-
-	// /**
-	// * All {@link TextGridEntry} objects with their ID as values.
-	// */
-	// protected final NavigableMap<TextGridEntry<T>, Integer> entryIDs;
-
-	/**
-	 * The tier ID.
-	 */
-	protected final int id;
-
-	// /**
-	// * The last entry ID automatically assigned to a newly-added
-	// * {@link TextGridEntry}.
-	// */
-	// private int lastAutomaticallyAddedEntryID = 0;
-
-	/**
-	 * The tier name.
-	 */
-	protected final String name;
 
 	/**
 	 * The tier class.
@@ -174,26 +127,18 @@ public class TextGridTier<T> extends
 	 *            has been added to.
 	 * @param tierClass
 	 *            The tier class.
-	 * @param id
-	 *            The tier ID.
-	 * @param name
-	 *            The tier name.
 	 * @param startTime
 	 *            The tier start time.
 	 * @param endTime
 	 *            The tier end time.
 	 */
-	TextGridTier(final TextGridFile<T> tgf, final TextGridTierClass tierClass,
-			final int id, final String name, final double startTime,
+	TextGridTier(final TextGridFile<D> tgf, final TextGridTierClass tierClass,
+			final double startTime,
 			final double endTime) {
 		super(startTime, endTime);
 
-		this.id = id;
-		this.name = name;
+		this.file = tgf;
 		this.tierClass = tierClass;
-
-		// this.entryIDs = new TreeMap<TextGridEntry<T>, Integer>();
-		// this.entries = new ArrayList<TextGridEntry<T>>();
 	}
 
 	/**
@@ -202,10 +147,6 @@ public class TextGridTier<T> extends
 	 *            has been added to.
 	 * @param tierClass
 	 *            The tier class.
-	 * @param id
-	 *            The tier ID.
-	 * @param name
-	 *            The tier name.
 	 * @param startTime
 	 *            The tier start time.
 	 * @param endTime
@@ -214,58 +155,16 @@ public class TextGridTier<T> extends
 	 *            The size of the tier measured by the number of
 	 *            {@link TextGridEntry} objects it has.
 	 */
-	TextGridTier(final TextGridFile<T> tgf, final TextGridTierClass tierClass,
-			final int id, final String name, final double startTime,
+	TextGridTier(final TextGridFile<D> tgf, final TextGridTierClass tierClass,
+			final double startTime,
 			final double endTime, final int size) {
 
 		super(startTime, endTime);
 
-		this.id = id;
-		this.name = name;
+		this.file = tgf;
 		this.tierClass = tierClass;
 
-		// this.entryIDs = new TreeMap<TextGridEntry<T>, Integer>();
-		// this.entries = new ArrayList<TextGridEntry<T>>(size);
 	}
-
-	// /**
-	// * Constructs and adds a new {@link TextGridEntry} object.
-	// *
-	// * @param startTime
-	// * The entry start time.
-	// * @param endTime
-	// * The entry end time.
-	// * @param data
-	// * The annotation data denoted by the entry.
-	// * @return The newly-constructed and (successfully) -added
-	// * <code>TextGridEntry</code> object.
-	// */
-	// public TextGridEntry<T> addEntry(final double startTime,
-	// final double endTime, final T data) {
-	// final int newEntryID = getNextFreeEntryID();
-	// final TextGridEntry<T> newEntry = addEntry(newEntryID, startTime,
-	// endTime, data);
-	// lastAutomaticallyAddedEntryID = newEntryID;
-	// return newEntry;
-	//
-	// }
-
-	// /**
-	// * Adds a {@link TextGridEntry} object.
-	// *
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to add.
-	// * @return The ID of the newly-added <code>TextGridEntry</code> object.
-	// */
-	// public int addEntry(final TextGridEntry<T> entry) {
-	// int nextFreeEntryID = getNextFreeEntryID();
-	// addToEntryList(nextFreeEntryID, entry);
-	// entryIDs.put(entry, nextFreeEntryID);
-	// tgf.addEntry(entry);
-	//
-	// return nextFreeEntryID;
-	//
-	// }
 
 	/**
 	 * Constructs and adds a new {@link TextGridEntry} object.
@@ -279,11 +178,12 @@ public class TextGridTier<T> extends
 	 * @return The newly-constructed and (successfully) -added
 	 *         <code>TextGridEntry</code> object.
 	 */
-	public TextGridEntry<T> addEntry(final double startTime,
-			final double endTime, final T data) {
-		final TextGridEntry<T> newEntry = new TextGridEntry<T>(this, startTime,
+	public TextGridEntry<D> addEntry(final double startTime,
+			final double endTime, final D data) {
+		final TextGridEntry<D> newEntry = new TextGridEntry<D>(this, startTime,
 				endTime, data);
 		add(newEntry);
+		file.addEntry(newEntry);
 		return newEntry;
 
 	}
@@ -302,78 +202,15 @@ public class TextGridTier<T> extends
 	 * @return The newly-constructed and (successfully) -added
 	 *         <code>TextGridEntry</code> object.
 	 */
-	public TextGridEntry<T> addEntry(final int id, final double startTime,
-			final double endTime, final T data) {
-		final TextGridEntry<T> newEntry = new TextGridEntry<T>(this, startTime,
+	public TextGridEntry<D> addEntry(final int id, final double startTime,
+			final double endTime, final D data) {
+		final TextGridEntry<D> newEntry = new TextGridEntry<D>(this, startTime,
 				endTime, data);
 		add(id, newEntry);
+		file.addEntry(newEntry);
 		return newEntry;
 
 	}
-
-	// /**
-	// * Adds an {@link TextGridEntry} object into the entry {@link List},
-	// * replacing any entry assigned to the given ID.
-	// *
-	// * @param id
-	// * The ID to assign the <code>TextGridEntry</code> object to.
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to add.
-	// */
-	// private void addEntry(final int id, final TextGridEntry<T> entry) {
-	// // If the size of the entry list is equal to or less than the given
-	// // entry ID
-	// // (e.g. index), it cannot already exist
-	// if (entries.size() <= id) {
-	// addNewEntryExtend(entry, id);
-	//
-	// } else {
-	// final TextGridEntry<T> oldEntry = entries.get(id);
-	// // If the entry reference is null, it has not been added yet even
-	// // though entries with greater IDs already have been
-	// if (oldEntry == null) {
-	// addNewEntry(entry, id);
-	// } else {
-	// // An entry already exists for the ID if it is not null; replace
-	// // it
-	// replaceEntry(id, entry);
-	// }
-	// }
-	//
-	// }
-
-	// /**
-	// * Adds a {@link TextGridEntry} object to a previously-unassigned ID.
-	// *
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to add.
-	// * @param id
-	// * The ID to assign the newly-added <code>TextGridEntry</code>
-	// * object to.
-	// */
-	// private void addNewEntry(final TextGridEntry<T> entry, final int id) {
-	// entries.set(id, entry);
-	// entryIDs.put(entry, id);
-	// tgf.addEntry(entry);
-	// }
-	//
-	// /**
-	// * Adds a {@link TextGridEntry} object to a previously-unassigned ID,
-	// * extending {@link #entries} if necessary.
-	// *
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to add.
-	// * @param id
-	// * The ID to assign the newly-added <code>TextGridEntry</code>
-	// * object to.
-	// */
-	// private void addNewEntryExtend(final TextGridEntry<T> entry, final int
-	// id) {
-	// extendToIndex(entries, id);
-	// entries.set(id, entry);
-	// entryIDs.put(entry, id);
-	// tgf.addEntry(entry);
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -381,16 +218,16 @@ public class TextGridTier<T> extends
 	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
 	 */
 	@Override
-	protected int deepCompareTo(final TextGridTier<T> arg0) {
+	protected int deepCompareTo(final TextGridTier<D> arg0) {
 
 		int comp = 0;
 
-		if (id < arg0.id) {
-			comp = -1;
-		} else if (id > arg0.id) {
-			comp = 1;
-
-		} else {
+//		if (id < arg0.id) {
+//			comp = -1;
+//		} else if (id > arg0.id) {
+//			comp = 1;
+//
+//		} else {
 
 			if (size() < arg0.size()) {
 				comp = -1;
@@ -398,7 +235,7 @@ public class TextGridTier<T> extends
 				comp = 1;
 			}
 
-		}
+//		}
 		return comp;
 	}
 
@@ -419,85 +256,29 @@ public class TextGridTier<T> extends
 			return false;
 		}
 		final TextGridTier<?> other = (TextGridTier<?>) obj;
-		if (id != other.id) {
-			return false;
-		}
-		if (name == null) {
-			if (other.name != null) {
-				return false;
-			}
-		} else if (!name.equals(other.name)) {
-			return false;
-		}
-		// if (tgf == null) {
-		// if (other.tgf != null)
-		// return false;
-		// } else if (!tgf.equals(other.tgf))
-		// return false;
+//		if (id != other.id) {
+//			return false;
+//		}
+
 		if (tierClass != other.tierClass) {
 			return false;
 		}
 		return true;
 	}
 
-	// /**
-	// * @return the entries
-	// */
-	// public NavigableMap<TextGridEntry<T>, Integer> getEntries() {
-	// return entryIDs;
-	// }
-
-	// /**
-	// * Gets an {@link TextGridEntry} object by its ID.
-	// *
-	// * @param id
-	// * The ID of the entry to get.
-	// * @return The {@link TextGridEntry} object associated with the given ID.
-	// */
-	// public TextGridEntry<T> getEntry(final int id) {
-	// return entries.get(id);
-	// }
-
 	/**
-	 * @return the id
+	 * @return The ID of the tier.
 	 */
-	public int getID() {
-		return id;
+	public Integer getID() {
+		return file.getID(this);
 	}
-
-	// /**
-	// *
-	// * @param entry
-	// * The {@link TextGridEntry} to get the ID of.
-	// * @return The <code>TextGridEntry</code> ID.
-	// */
-	// public Integer getID(final TextGridEntry<T> entry) {
-	// return entryIDs.get(entry);
-	//
-	// }
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return file.getName(this);
 	}
-
-	// /**
-	// * Gets the next free ID for automatically assigning to a newly-added
-	// * {@link TextGridEntry}.
-	// *
-	// * @return The next free ID.
-	// */
-	// private int getNextFreeEntryID() {
-	// int nextFreeEntryID = lastAutomaticallyAddedEntryID + 1;
-	// while (isAssigned(nextFreeEntryID)) {
-	// nextFreeEntryID++;
-	// }
-	//
-	// return nextFreeEntryID;
-	//
-	// }
 
 	/**
 	 * @return the tierClass
@@ -515,128 +296,18 @@ public class TextGridTier<T> extends
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + id;
-		result = prime * result + (name == null ? 0 : name.hashCode());
+//		result = prime * result + id;
 		result = prime * result
 				+ (tierClass == null ? 0 : tierClass.hashCode());
+		// If the TextGrid file is not null, add the hash of the tier ID
+		if (file != null) {
+			final Integer id = getID();
+			result = prime * result + (id == null ? 0 : id.hashCode());
+		} else {
+			result = prime * result;
+		}
 		return result;
 	}
-
-	// /**
-	// * Checks if a given integer has already been used as an ID for a
-	// * {@link TextGridEntry} object.
-	// *
-	// * @param id
-	// * The ID to check.
-	// * @return <code>true</code> iff there is an entry with the given ID.
-	// */
-	// private boolean isAssigned(final int id) {
-	// final boolean isAssigned;
-	// // If the size of the entry list is equal to or less than the given
-	// // entry ID
-	// // (e.g. index), it cannot exist
-	// if (entries.size() <= id) {
-	// isAssigned = false;
-	// } else {
-	// final TextGridEntry<T> entry = entries.get(id);
-	// // If the entry reference is null, it has not been added yet even
-	// // though entries with greater IDs already have been
-	// if (entry == null) {
-	// isAssigned = false;
-	// } else {
-	// isAssigned = true;
-	// }
-	// }
-	//
-	// return isAssigned;
-	// }
-
-	// /**
-	// * Removes an {@link TextGridEntry} object.
-	// *
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to remove.
-	// * @return The ID previously associated with the removed
-	// * <code>TextGridEntry</code> object or <code>null</code> if no
-	// * object was removed.
-	// *
-	// **/
-	// public Integer remove(final TextGridEntry<T> entry) {
-	// final Integer removedEntryID = entryIDs.remove(entry);
-	// if (removedEntryID != null) {
-	// entries.set(removedEntryID, null);
-	// tgf.removeEntry(entry);
-	// }
-	//
-	// return removedEntryID;
-	// }
-
-	// /**
-	// * Puts an {@link TextGridEntry} object into the entry {@link List},
-	// * replacing a previous one and updating the set of all
-	// * <code>TextGridEntry</code> objects to match if necessary.
-	// *
-	// * @param id
-	// * The entry ID.
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to add to the
-	// * <code>Map</code>.
-	// */
-	// private final void putEntry(final int id, final TextGridEntry<T> entry) {
-	// final TextGridEntry<T> oldEntry = entries.get(id, entry);
-	// if (oldEntry != null) {
-	// entryIDs.remove(entry);
-	// }
-	// }
-
-	// /**
-	// * Removes an {@link TextGridEntry} object.
-	// *
-	// * @param id
-	// * The entry ID.
-	// * @return The removed <code>TextGridEntry</code> object if the tier
-	// * contained it and it was successfully removed, or
-	// * <code>null</code> otherwise.
-	// */
-	// public TextGridEntry<T> removeEntry(final int id) {
-	// final TextGridEntry<T> removee = entries.set(id, null);
-	// if (removee != null) {
-	// entryIDs.remove(removee);
-	// tgf.removeEntry(removee);
-	// }
-	// return removee;
-	//
-	// }
-
-	// /**
-	// * Replaces the {@link TextGridEntry} object associated with a given ID
-	// with
-	// * a given replacement entry.
-	// *
-	// * @param id
-	// * The ID of the <code>TextGridEntry</code> object to replace.
-	// * @param entry
-	// * The <code>TextGridEntry</code> object to add.
-	// */
-	// private void replaceEntry(final int id, final TextGridEntry<T> entry) {
-	// final TextGridEntry<T> oldEntry = entries.get(id);
-	// entryIDs.remove(oldEntry);
-	// entries.remove(id);
-	//
-	// entryIDs.put(entry, id);
-	// // Length-checking is not necessary, since the index already existed for
-	// // certain
-	// entries.set(id, entry);
-	// }
-
-	// /**
-	// *
-	// * @return The amount of {@link TextGridEntry} objects the
-	// * <code>TextGridTier</code> contains.
-	// */
-	// public final int size() {
-	// return entryIDs.size();
-	// }
 
 	/*
 	 * (non-Javadoc)
@@ -646,17 +317,21 @@ public class TextGridTier<T> extends
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("TextGridTier[id=");
-		builder.append(id);
-		builder.append(", name=");
-		builder.append(name);
+		builder.append("TextGridTier[");
+		if (file != null) {
+			builder.append("id=");
+			builder.append(getID());
+			builder.append(", name=");
+			builder.append(getName());
+		}
+		
 		builder.append(", tierClass=");
 		builder.append(tierClass);
 		builder.append(", startTime=");
 		builder.append(endTime);
 		builder.append(", endTime=");
 		builder.append(endTime);
-		builder.append(", elements=");
+		builder.append(", entries=");
 		builder.append(getElements());
 		builder.append("]");
 		return builder.toString();

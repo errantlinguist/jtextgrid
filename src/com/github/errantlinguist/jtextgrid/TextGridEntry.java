@@ -45,7 +45,7 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 	/**
 	 * The {@link TextGridTier} representing the tier the entry is on.
 	 */
-	private final TextGridTier<D> textGridTier;
+	private final TextGridTier<D> tier;
 
 	/**
 	 * @param tier
@@ -63,7 +63,7 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 	TextGridEntry(final TextGridTier<D> tier, final double startTime,
 			final double endTime, final D data) {
 		super(startTime, endTime);
-		this.textGridTier = tier;
+		this.tier = tier;
 		this.data = data;
 
 		this.precachedHashCode = precachehashCode();
@@ -79,8 +79,8 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 		int comp = 0;
 
 		// Compare textGridTier IDs
-		final int tid1 = textGridTier.id;
-		final int tid2 = arg0.textGridTier.id;
+		final int tid1 = tier.getID();
+		final int tid2 = arg0.tier.getID();
 
 		if (tid1 < tid2) {
 			comp = -1;
@@ -89,24 +89,24 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 		} else {
 
 			// Try to compare the entry IDs
-//			if (textGridTier != null) {
-//
-//				if (arg0.textGridTier != null) {
-//					final int id1 = getID();
-//					final int id2 = arg0.getID();
-//					if (id1 < id2) {
-//						comp = -1;
-//					} else if (id1 < id2) {
-//						comp = 1;
-//					}
-//
-//				} else {
-//					return -1;
-//				}
-//
-//			} else if (arg0.textGridTier != null) {
-//				return 1;
-//			}
+			// if (textGridTier != null) {
+			//
+			// if (arg0.textGridTier != null) {
+			// final int id1 = getID();
+			// final int id2 = arg0.getID();
+			// if (id1 < id2) {
+			// comp = -1;
+			// } else if (id1 < id2) {
+			// comp = 1;
+			// }
+			//
+			// } else {
+			// return -1;
+			// }
+			//
+			// } else if (arg0.textGridTier != null) {
+			// return 1;
+			// }
 
 		}
 
@@ -138,21 +138,6 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 			return false;
 		}
 
-		if (textGridTier == null) {
-			if (other.textGridTier != null) {
-				return false;
-			}
-		} else {
-			// First check if the IDs are different in the respective tiers
-			if (!getID().equals(other.getID())) {
-				return false;
-			}
-			if (!textGridTier.equals(other.textGridTier)) {
-				return false;
-			}
-
-		}
-
 		return true;
 	}
 
@@ -167,7 +152,7 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 	 * @return The ID of the entry.
 	 */
 	public Integer getID() {
-		return textGridTier.getID(this);
+		return tier.getID(this);
 	}
 
 	/*
@@ -192,7 +177,7 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 		// If the tier is not null, combine the hash of the entry's ID with the
 		// hash in order to differentiate entries which are equal in all ways
 		// except for the tier they are on.
-		if (textGridTier != null) {
+		if (tier != null) {
 			final Integer id = getID();
 			result = prime * result + (id == null ? 0 : id.hashCode());
 		} else {
@@ -210,9 +195,13 @@ public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("TextGridEntry[id=");
-		builder.append(getID());
-		builder.append(", startTime=");
+		builder.append("TextGridEntry[");
+		if (tier != null) {
+			builder.append("id=");
+			builder.append(getID());
+			builder.append(", ");
+		}
+		builder.append("startTime=");
 		builder.append(startTime);
 		builder.append(", endTime=");
 		builder.append(endTime);
