@@ -759,6 +759,8 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 		tierSize = size;
 
 	}
+	
+
 
 	/**
 	 * Sets the start time of the next new {@link TextGridTier} object.

@@ -27,20 +27,15 @@ package com.github.errantlinguist.jtextgrid;
  * @version 2012-01-16
  * @since 2011-04-15
  * 
- * @param <T>
+ * @param <D>
  *            The object type representing the entry data.
  */
-public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
+public final class TextGridEntry<D> extends TimeSeriesData<TextGridEntry<D>> {
 
 	/**
 	 * The annotation data the entry represents.
 	 */
-	protected final T data;
-
-	/**
-	 * The ID of the entry.
-	 */
-	protected final int id;
+	protected final D data;
 
 	/**
 	 * The hash code for final members.
@@ -50,7 +45,7 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 	/**
 	 * The {@link TextGridTier} representing the tier the entry is on.
 	 */
-	private final TextGridTier<T> textGridTier;
+	private final TextGridTier<D> textGridTier;
 
 	/**
 	 * @param tier
@@ -65,11 +60,10 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 	 * @param data
 	 *            The annotation data the entry represents.
 	 */
-	TextGridEntry(final TextGridTier<T> tier, final int id,
-			final double startTime, final double endTime, final T data) {
+	TextGridEntry(final TextGridTier<D> tier, final double startTime,
+			final double endTime, final D data) {
 		super(startTime, endTime);
 		this.textGridTier = tier;
-		this.id = id;
 		this.data = data;
 
 		this.precachedHashCode = precachehashCode();
@@ -81,7 +75,7 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
 	 */
 	@Override
-	protected int deepCompareTo(final TextGridEntry<T> arg0) {
+	protected int deepCompareTo(final TextGridEntry<D> arg0) {
 		int comp = 0;
 
 		// Compare textGridTier IDs
@@ -94,12 +88,25 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 			comp = 1;
 		} else {
 
-			// Compare entry IDs
-			if (id < arg0.id) {
-				comp = -1;
-			} else if (id > arg0.id) {
-				comp = 1;
-			}
+			// Try to compare the entry IDs
+//			if (textGridTier != null) {
+//
+//				if (arg0.textGridTier != null) {
+//					final int id1 = getID();
+//					final int id2 = arg0.getID();
+//					if (id1 < id2) {
+//						comp = -1;
+//					} else if (id1 < id2) {
+//						comp = 1;
+//					}
+//
+//				} else {
+//					return -1;
+//				}
+//
+//			} else if (arg0.textGridTier != null) {
+//				return 1;
+//			}
 
 		}
 
@@ -130,31 +137,37 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 		} else if (!data.equals(other.data)) {
 			return false;
 		}
-		if (id != other.id) {
-			return false;
-		}
+
 		if (textGridTier == null) {
 			if (other.textGridTier != null) {
 				return false;
 			}
-		} else if (!textGridTier.equals(other.textGridTier)) {
-			return false;
+		} else {
+			// First check if the IDs are different in the respective tiers
+			if (!getID().equals(other.getID())) {
+				return false;
+			}
+			if (!textGridTier.equals(other.textGridTier)) {
+				return false;
+			}
+
 		}
+
 		return true;
 	}
 
 	/**
 	 * @return the data
 	 */
-	public T getData() {
+	public D getData() {
 		return data;
 	}
 
 	/**
-	 * @return the id
+	 * @return The ID of the entry.
 	 */
-	public int getID() {
-		return id;
+	public Integer getID() {
+		return textGridTier.getID(this);
 	}
 
 	/*
@@ -176,7 +189,16 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 		final int prime = 31;
 		int result = super.hashCode();
 		result = prime * result + (data == null ? 0 : data.hashCode());
-		result = prime * result + id;
+		// If the tier is not null, combine the hash of the entry's ID with the
+		// hash in order to differentiate entries which are equal in all ways
+		// except for the tier they are on.
+		if (textGridTier != null) {
+			final Integer id = getID();
+			result = prime * result + (id == null ? 0 : id.hashCode());
+		} else {
+			result = prime * result;
+		}
+
 		return result;
 	}
 
@@ -189,7 +211,7 @@ public final class TextGridEntry<T> extends TimeSeriesData<TextGridEntry<T>> {
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("TextGridEntry[id=");
-		builder.append(id);
+		builder.append(getID());
 		builder.append(", startTime=");
 		builder.append(startTime);
 		builder.append(", endTime=");

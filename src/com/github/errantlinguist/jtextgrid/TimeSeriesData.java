@@ -26,6 +26,9 @@ package com.github.errantlinguist.jtextgrid;
  * @version 2012-01-16
  * @since 2011-07-06
  * 
+ * @param <T>
+ *            The <code>TimeSeriesData</code> object subtype.
+ * 
  */
 public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		Comparable<T> {
