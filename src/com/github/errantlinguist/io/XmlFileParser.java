@@ -69,8 +69,8 @@ public class XmlFileParser implements FileParser<Document> {
 	 * @param encoding
 	 *            The encoding scheme used to encode an input XML
 	 *            <code>String</code>.
-	 * @return A <code>String</code> denoting an XML declaration, e.g.&nbsp;{@code
-	 *         <?xml version="1.0" encoding="utf-8"?>}.
+	 * @return A <code>String</code> denoting an XML declaration, e.g.&nbsp;
+	 *         {@code <?xml version="1.0" encoding="utf-8"?>}.
 	 */
 	private static String makeXMLDeclaration(final double xmlVersion,
 			final String encoding) {

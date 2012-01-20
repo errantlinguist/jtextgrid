@@ -30,11 +30,13 @@ import java.util.regex.Pattern;
 import com.github.errantlinguist.io.DummyFileParser;
 import com.github.errantlinguist.io.FileParser;
 import com.github.errantlinguist.io.FileReader;
-import com.github.errantlinguist.jtextgrid.TextGridTier.TextGridTierClass;
+import com.github.errantlinguist.jtextgrid.Tier.TierClass;
 
 /**
- * A file reader which reads in <a href="http://www.fon.hum.uva.nl/praat/">Praat</a> TextGrid files, parses the data contained
- * therein, and returns it as a {@link TextGridFile} object representing it.
+ * A file reader which reads in <a
+ * href="http://www.fon.hum.uva.nl/praat/">Praat</a> TextGrid files, parses the
+ * data contained therein, and returns it as a {@link TextGridFile} object
+ * representing it.
  * 
  * @author Todd Shore
  * @version 2012-01-16
@@ -44,9 +46,10 @@ import com.github.errantlinguist.jtextgrid.TextGridTier.TextGridTierClass;
  *            The type of data stored in the <code>TextGridFile</code> object.
  */
 public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
-	
+
 	/**
-	 * An enumeration of section types in a <a href="http://www.fon.hum.uva.nl/praat/">Praat</a> TextGrid file.
+	 * An enumeration of section types in a <a
+	 * href="http://www.fon.hum.uva.nl/praat/">Praat</a> TextGrid file.
 	 * 
 	 * @author Todd Shore
 	 * @version 2011-07-28
@@ -236,7 +239,8 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 			protected <T> void handleMatch(final Matcher matcher,
 					final TextGridFileReader<T> reader) {
 
-				final TextGridTierClass tierClass = TextGridTierClass.getTierClass(matcher.group(1));
+				final TierClass tierClass = TierClass.getTierClass(matcher
+						.group(1));
 				reader.setTierClass(tierClass);
 				reader.setCurrentSection(TIER_NAME);
 
@@ -267,7 +271,8 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 					final TextGridFileReader<T> reader) {
 
 				reader.setTierEndTime(Double.parseDouble(matcher.group(1)));
-				reader.setCurrentSection(getNextSection(reader.getTierClass().getName()));
+				reader.setCurrentSection(getNextSection(reader.getTierClass()
+						.getName()));
 
 			}
 
@@ -413,8 +418,8 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 		 * 
 		 * @param line
 		 *            The <code>String</code> to match.
-		 * @return A {@link Matcher} object matching the <code>String</code> to the section
-		 *         <code>Pattern</code>.
+		 * @return A {@link Matcher} object matching the <code>String</code> to
+		 *         the section <code>Pattern</code>.
 		 */
 		protected final Matcher match(final String line) {
 			final Matcher matcher = pattern.matcher(line);
@@ -451,8 +456,9 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * A holder class for the static singleton {@link TextGridFileReader} instance
-	 * with a {@link DummyFileParser} for {@link TextGridFileReader#parser}.
+	 * A holder class for the static singleton {@link TextGridFileReader}
+	 * instance with a {@link DummyFileParser} for
+	 * {@link TextGridFileReader#parser}.
 	 * 
 	 * @author Todd Shore
 	 * @version 2012-01-16
@@ -504,9 +510,9 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 
 	private TextGridFile<T> tgf;
 
-	private TextGridTier<T> tier;
+	private Tier<T> tier;
 
-	private TextGridTierClass tierClass;
+	private TierClass tierClass;
 
 	private double tierEndTime;
 
@@ -528,17 +534,17 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Constructs and adds a new {@link TextGridEntry} object with the current
-	 * entry details to the currently {@link TextGridTier} object.
+	 * Constructs and adds a new {@link Entry} object with the current entry
+	 * details to the currently {@link Tier} object.
 	 */
 	private void addNewEntry() {
 		tier.addEntry(entryID, entryStartTime, entryEndTime, entryData);
 	}
 
 	/**
-	 * Constructs a new {@link TextGridTier} object with the current tier
-	 * details to the current {@link TextGridFile} object and sets it as the
-	 * current <code>TextGridTier</code> being added to.
+	 * Constructs a new {@link Tier} object with the current tier details to the
+	 * current {@link TextGridFile} object and sets it as the current
+	 * <code>Tier</code> being added to.
 	 */
 	private void addNewTier() {
 		tier = tgf.addTier(tierClass, tierID, tierName, tierStartTime,
@@ -550,7 +556,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	 * 
 	 * @return the tierClass
 	 */
-	private TextGridTierClass getTierClass() {
+	private TierClass getTierClass() {
 		return tierClass;
 	}
 
@@ -638,7 +644,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the end time of the next new {@link TextGridEntry} object.
+	 * Sets the end time of the next new {@link Entry} object.
 	 * 
 	 * @param time
 	 *            The end time of the entry.
@@ -649,7 +655,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the ID of the next new {@link TextGridEntry} object.
+	 * Sets the ID of the next new {@link Entry} object.
 	 * 
 	 * @param id
 	 *            The ID of the entry.
@@ -660,7 +666,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the start time of the next new {@link TextGridEntry} object.
+	 * Sets the start time of the next new {@link Entry} object.
 	 * 
 	 * @param time
 	 *            The start time of the entry.
@@ -705,18 +711,18 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the tier class of the next new {@link TextGridTier} object.
+	 * Sets the tier class of the next new {@link Tier} object.
 	 * 
 	 * @param tierClass
 	 *            The tier class.
 	 */
-	private void setTierClass(final TextGridTierClass tierClass) {
+	private void setTierClass(final TierClass tierClass) {
 		this.tierClass = tierClass;
 
 	}
 
 	/**
-	 * Sets the end time of the next new {@link TextGridTier} object.
+	 * Sets the end time of the next new {@link Tier} object.
 	 * 
 	 * @param time
 	 *            The end time of the file.
@@ -727,7 +733,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the ID of the next new {@link TextGridTier} object.
+	 * Sets the ID of the next new {@link Tier} object.
 	 * 
 	 * @param id
 	 *            The ID of the tier.
@@ -738,7 +744,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the name of the next new {@link TextGridTier} object.
+	 * Sets the name of the next new {@link Tier} object.
 	 * 
 	 * @param name
 	 *            The name of the tier.
@@ -749,8 +755,8 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	}
 
 	/**
-	 * Sets the size of the next new {@link TextGridTier} object measured by the
-	 * number of entries it has.
+	 * Sets the size of the next new {@link Tier} object measured by the number
+	 * of entries it has.
 	 * 
 	 * @param size
 	 *            The size of the tier.
@@ -759,11 +765,9 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 		tierSize = size;
 
 	}
-	
-
 
 	/**
-	 * Sets the start time of the next new {@link TextGridTier} object.
+	 * Sets the start time of the next new {@link Tier} object.
 	 * 
 	 * @param time
 	 *            The start time of the tier.

@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
-import com.github.errantlinguist.jtextgrid.TextGridTier.TextGridTierClass;
+import com.github.errantlinguist.jtextgrid.Tier.TierClass;
 
 /**
  * A representation of a <a href="http://www.fon.hum.uva.nl/praat/">Praat</a>
@@ -42,38 +42,29 @@ import com.github.errantlinguist.jtextgrid.TextGridTier.TextGridTierClass;
  * 
  */
 public class TextGridFile<T> extends
-		TimeSeriesDataCollection<TextGridTier<T>, TextGridFile<T>> {
-	
-	/**
-	 * Gets the string name of a given {@link TextGridTier}.
-	 * @param tier The <code>TextGridTier</code> to get the name of.
-	 * @return The name of the <code>TextGridTier</code>.
-	 */
-	public String getName(TextGridTier<T> tier){
-		String name = tierNames.get(tier); 
-		return name;
-	}
-
-//	public static void main(final String[] args) throws IOException, Exception {
-//		final TextGridFileReader<String> reader = TextGridFileReader
-//				.getStringParserInstance();
-//		final TextGridFile<String> tgf = reader
-//				.readFile("input/Lotse.TextGrid");
-//		System.out.println(tgf);
-//		System.out.println(tgf.entryCount());
-//		System.out.println(tgf.tiersByName.keySet());
-//		System.out.println(tgf.tierNames.values());
-//	}
+		TimeSeriesDataCollection<Tier<T>, TextGridFile<T>> {
 
 	/**
-	 * All {@link TextGridEntry} objects in all {@link TextGridTier} objects
-	 * representing the TextGrid tiers.
+	 * All {@link Entry} objects in all {@link Tier} objects representing the
+	 * TextGrid tiers.
 	 */
-	protected final NavigableSet<TextGridEntry<T>> entries;
+	protected final NavigableSet<Entry<T>> entries;
 
-	private final Map<TextGridTier<T>, String> tierNames;
+	// public static void main(final String[] args) throws IOException,
+	// Exception {
+	// final TextGridFileReader<String> reader = TextGridFileReader
+	// .getStringParserInstance();
+	// final TextGridFile<String> tgf = reader
+	// .readFile("input/Lotse.TextGrid");
+	// System.out.println(tgf);
+	// System.out.println(tgf.entryCount());
+	// System.out.println(tgf.tiersByName.keySet());
+	// System.out.println(tgf.tierNames.values());
+	// }
 
-	private final Map<String, TextGridTier<T>> tiersByName;
+	private final Map<Tier<T>, String> tierNames;
+
+	private final Map<String, Tier<T>> tiersByName;
 
 	/**
 	 * 
@@ -85,9 +76,9 @@ public class TextGridFile<T> extends
 	public TextGridFile(final double startTime, final double endTime) {
 		super(startTime, endTime);
 
-		this.entries = new TreeSet<TextGridEntry<T>>();
-		this.tiersByName = new HashMap<String, TextGridTier<T>>();
-		this.tierNames = new HashMap<TextGridTier<T>, String>();
+		this.entries = new TreeSet<Entry<T>>();
+		this.tiersByName = new HashMap<String, Tier<T>>();
+		this.tierNames = new HashMap<Tier<T>, String>();
 	}
 
 	/**
@@ -103,28 +94,26 @@ public class TextGridFile<T> extends
 			final int size) {
 		super(startTime, endTime);
 
-		this.entries = new TreeSet<TextGridEntry<T>>();
-		this.tiersByName = new HashMap<String, TextGridTier<T>>(size);
-		this.tierNames = new HashMap<TextGridTier<T>, String>(size);
+		this.entries = new TreeSet<Entry<T>>();
+		this.tiersByName = new HashMap<String, Tier<T>>(size);
+		this.tierNames = new HashMap<Tier<T>, String>(size);
 	}
 
 	/**
-	 * Adds the {@link TextGridEntry} objects in a given {@link Collection}
-	 * thereof to the set of all entries.
+	 * Adds the {@link Entry} objects in a given {@link Collection} thereof to
+	 * the set of all entries.
 	 * 
 	 * @param entries
-	 *            The <code>Collection</code> of <code>TextGridEntry</code>
-	 *            objects to add.
-	 * @return <code>true</code> iff the set of <code>TextGridEntry</code>
-	 *         objects was changed, i.e.&nbsp;if at least one
-	 *         <code>TextGridEntry</code> was added.
+	 *            The <code>Collection</code> of <code>Entry</code> objects to
+	 *            add.
+	 * @return <code>true</code> iff the set of <code>Entry</code> objects was
+	 *         changed, i.e.&nbsp;if at least one <code>Entry</code> was added.
 	 */
-	protected final boolean addEntries(
-			final Collection<TextGridEntry<T>> entries) {
+	protected final boolean addEntries(final Collection<Entry<T>> entries) {
 
 		boolean wasChanged = false;
 
-		for (final TextGridEntry<T> entry : entries) {
+		for (final Entry<T> entry : entries) {
 			final boolean wasAdded = this.entries.add(entry);
 			if (wasAdded) {
 				wasChanged = true;
@@ -136,20 +125,20 @@ public class TextGridFile<T> extends
 	}
 
 	/**
-	 * Adds an {@link TextGridEntry} object to the set of all entries.
+	 * Adds an {@link Entry} object to the set of all entries.
 	 * 
 	 * @param entry
-	 *            The <code>TextGridEntry</code> object to add.
-	 * @return <code>true</code> iff the <code>TextGridEntry</code> was
-	 *         successfully added.
+	 *            The <code>Entry</code> object to add.
+	 * @return <code>true</code> iff the <code>Entry</code> was successfully
+	 *         added.
 	 */
-	protected final boolean addEntry(final TextGridEntry<T> entry) {
+	protected final boolean addEntry(final Entry<T> entry) {
 		return entries.add(entry);
 
 	}
 
 	/**
-	 * Constructs and adds a new {@link TextGridTier} object.
+	 * Constructs and adds a new {@link Tier} object.
 	 * 
 	 * @param tierClass
 	 *            The class of the tier.
@@ -161,14 +150,12 @@ public class TextGridFile<T> extends
 	 *            The tier start time.
 	 * @param endTime
 	 *            The tier end time.
-	 * @return The newly-constructed and (successfully) -added
-	 *         <code>TextGridTier</code> object.
+	 * @return The newly-constructed and (successfully) -added <code>Tier</code>
+	 *         object.
 	 */
-	public final TextGridTier<T> addTier(final int id,
-			final TextGridTierClass tierClass, final String name,
-			final double startTime, final double endTime) {
-		final TextGridTier<T> newTier = new TextGridTier<T>(this, tierClass,
-				startTime, endTime);
+	public final Tier<T> addTier(final int id, final TierClass tierClass,
+			final String name, final double startTime, final double endTime) {
+		final Tier<T> newTier = new Tier<T>(this, tierClass, startTime, endTime);
 		add(id, newTier);
 		putTierByName(name, newTier);
 		return newTier;
@@ -176,7 +163,7 @@ public class TextGridFile<T> extends
 	}
 
 	/**
-	 * Constructs and adds a new {@link TextGridTier} object.
+	 * Constructs and adds a new {@link Tier} object.
 	 * 
 	 * @param tierClass
 	 *            The class of the tier.
@@ -189,16 +176,16 @@ public class TextGridFile<T> extends
 	 * @param endTime
 	 *            The tier end time.
 	 * @param size
-	 *            The size of the tier measured by the number of
-	 *            {@link TextGridEntry} objects it has.
-	 * @return The newly-constructed and (successfully) -added
-	 *         <code>TextGridTier</code> object.
+	 *            The size of the tier measured by the number of {@link Entry}
+	 *            objects it has.
+	 * @return The newly-constructed and (successfully) -added <code>Tier</code>
+	 *         object.
 	 */
-	public final TextGridTier<T> addTier(final TextGridTierClass tierClass,
-			final int id, final String name, final double startTime,
-			final double endTime, final int size) {
-		final TextGridTier<T> newTier = new TextGridTier<T>(this, tierClass,
-				startTime, endTime, size);
+	public final Tier<T> addTier(final TierClass tierClass, final int id,
+			final String name, final double startTime, final double endTime,
+			final int size) {
+		final Tier<T> newTier = new Tier<T>(this, tierClass, startTime,
+				endTime, size);
 		add(id, newTier);
 		putTierByName(name, newTier);
 		return newTier;
@@ -232,7 +219,7 @@ public class TextGridFile<T> extends
 
 	/**
 	 * 
-	 * @return The amount of {@link TextGridEntry} objects associated with the
+	 * @return The amount of {@link Entry} objects associated with the
 	 *         <code>TextGridFile</code>.
 	 */
 	public final int entryCount() {
@@ -242,33 +229,43 @@ public class TextGridFile<T> extends
 	/**
 	 * @return the entries
 	 */
-	public NavigableSet<TextGridEntry<T>> getEntries() {
+	public NavigableSet<Entry<T>> getEntries() {
 		return entries;
 	}
 
 	/**
-	 * Gets a {@link TextGridTier} object by its name.
+	 * Gets the string name of a given {@link Tier}.
+	 * 
+	 * @param tier
+	 *            The <code>Tier</code> to get the name of.
+	 * @return The name of the <code>Tier</code>.
+	 */
+	public String getName(final Tier<T> tier) {
+		final String name = tierNames.get(tier);
+		return name;
+	}
+
+	/**
+	 * Gets a {@link Tier} object by its name.
 	 * 
 	 * @param name
 	 *            name of the tier.
-	 * @return The <code>TextGridTier</code> object associated with the given
-	 *         name.
+	 * @return The <code>Tier</code> object associated with the given name.
 	 */
-	public final TextGridTier<T> getTier(final String name) {
+	public final Tier<T> getTier(final String name) {
 		return tiersByName.get(name);
 	}
 
 	/**
 	 * 
 	 * @return An ordered {@link List} of {@link NavigableSet} objects of the
-	 *         {@link TextGridEntry} objects associated with each
-	 *         {@link TextGridTier} object associated with the
-	 *         <code>TextGridFile</code>.
+	 *         {@link Entry} objects associated with each {@link Tier} object
+	 *         associated with the <code>TextGridFile</code>.
 	 */
-	public final List<NavigableSet<TextGridEntry<T>>> getTierEntryLists() {
-		final List<NavigableSet<TextGridEntry<T>>> newList = new ArrayList<NavigableSet<TextGridEntry<T>>>(
+	public final List<NavigableSet<Entry<T>>> getTierEntryLists() {
+		final List<NavigableSet<Entry<T>>> newList = new ArrayList<NavigableSet<Entry<T>>>(
 				getElements().size());
-		for (final TextGridTier<T> tier : getElements()) {
+		for (final Tier<T> tier : getElements()) {
 			newList.add(tier.getElementIDs().navigableKeySet());
 		}
 
@@ -276,37 +273,35 @@ public class TextGridFile<T> extends
 	}
 
 	/**
-	 * Puts a {@link TextGridTier} into the string name mapping.
+	 * Puts a {@link Tier} into the string name mapping.
 	 * 
 	 * @param name
-	 *            The name of the <code>TextGridTier</code> to put.
-	 * @return The <code>TextGridTier</code> previously mapped to by the name.
+	 *            The name of the <code>Tier</code> to put.
+	 * @return The <code>Tier</code> previously mapped to by the name.
 	 */
-	private TextGridTier<T> putTierByName(final String name,
-			final TextGridTier<T> tier) {
-	
+	private Tier<T> putTierByName(final String name, final Tier<T> tier) {
+
 		tierNames.put(tier, name);
-		TextGridTier<T> oldTier = tiersByName.put(name, tier);
+		final Tier<T> oldTier = tiersByName.put(name, tier);
 		return oldTier;
 	}
 
 	/**
-	 * Removes the {@link TextGridEntry} objects in a given {@link Collection}
-	 * thereof from the set of all entries.
+	 * Removes the {@link Entry} objects in a given {@link Collection} thereof
+	 * from the set of all entries.
 	 * 
 	 * @param entries
-	 *            The <code>Collection</code> of <code>TextGridEntry</code>
-	 *            objects to remove.
-	 * @return <code>true</code> iff the set of <code>TextGridEntry</code>
-	 *         objects was changed, i.e.&nbsp;if at least one
-	 *         <code>TextGridEntry</code> was removed.
+	 *            The <code>Collection</code> of <code>Entry</code> objects to
+	 *            remove.
+	 * @return <code>true</code> iff the set of <code>Entry</code> objects was
+	 *         changed, i.e.&nbsp;if at least one <code>Entry</code> was
+	 *         removed.
 	 */
-	protected final boolean removeEntries(
-			final Collection<TextGridEntry<T>> entries) {
+	protected final boolean removeEntries(final Collection<Entry<T>> entries) {
 
 		boolean wasChanged = false;
 
-		for (final TextGridEntry<T> entry : entries) {
+		for (final Entry<T> entry : entries) {
 			final boolean wasRemoved = this.entries.remove(entry);
 			if (wasRemoved) {
 				wasChanged = true;
@@ -318,15 +313,14 @@ public class TextGridFile<T> extends
 	}
 
 	/**
-	 * Removes an {@link TextGridEntry} object from the set of all entries.
+	 * Removes an {@link Entry} object from the set of all entries.
 	 * 
 	 * @param entry
-	 *            The <code>TextGridEntry</code> object to remove.
-	 * @return <code>true</code> iff the <code>TextGridEntry</code> was in the
-	 *         set of <code>TextGridEntry</code> objects and was successfully
-	 *         removed.
+	 *            The <code>Entry</code> object to remove.
+	 * @return <code>true</code> iff the <code>Entry</code> was in the set of
+	 *         <code>Entry</code> objects and was successfully removed.
 	 */
-	protected final boolean removeEntry(final TextGridEntry<T> entry) {
+	protected final boolean removeEntry(final Entry<T> entry) {
 		return entries.remove(entry);
 	}
 

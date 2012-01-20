@@ -61,8 +61,8 @@ public abstract class TimeSeriesDataCollection<E, T extends TimeSeriesDataCollec
 	}
 
 	/**
-	 * A {@link NavigableMap} of all elements as keys with their respective IDs as
-	 * values.
+	 * A {@link NavigableMap} of all elements as keys with their respective IDs
+	 * as values.
 	 */
 	private final NavigableMap<E, Integer> elementIDs;
 
@@ -254,9 +254,10 @@ public abstract class TimeSeriesDataCollection<E, T extends TimeSeriesDataCollec
 	 */
 	@Override
 	public int hashCode() {
-//		final int prime = 31;
-		int result = super.hashCode();
-//		result = prime * result + (elements == null ? 0 : elements.hashCode());
+		// final int prime = 31;
+		final int result = super.hashCode();
+		// result = prime * result + (elements == null ? 0 :
+		// elements.hashCode());
 		return result;
 	}
 

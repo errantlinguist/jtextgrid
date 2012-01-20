@@ -32,8 +32,8 @@ package com.github.errantlinguist.io;
 public interface FileParser<T> {
 
 	/**
-	 * Parses file data and returns a data structure representing its
-	 * denoted information.
+	 * Parses file data and returns a data structure representing its denoted
+	 * information.
 	 * 
 	 * @param line
 	 *            A line of data representing the interval data to be parsed.

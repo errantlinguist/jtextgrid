@@ -42,12 +42,13 @@ import java.util.Stack;
 public abstract class FileReader<T> {
 
 	/**
-	 * Makes a {@link List} of files in a directory and any of its sub-directories.
+	 * Makes a {@link List} of files in a directory and any of its
+	 * sub-directories.
 	 * 
 	 * @param indir
 	 *            The directory to be listed.
-	 * @return A <code>List</code> of {@link File} objects representing all matching files in
-	 *         the directory and its sub-directories.
+	 * @return A <code>List</code> of {@link File} objects representing all
+	 *         matching files in the directory and its sub-directories.
 	 */
 	private static final List<File> getDirContents(final File indir) {
 		final List<File> recursiveContents = new ArrayList<File>();
@@ -70,14 +71,15 @@ public abstract class FileReader<T> {
 	}
 
 	/**
-	 * Makes a {@link List} of files in a directory and any of its sub-directories.
+	 * Makes a {@link List} of files in a directory and any of its
+	 * sub-directories.
 	 * 
 	 * @param indir
 	 *            The directory to be listed.
 	 * @param filenameFilter
 	 *            A {@link FilenameFilter} denoting the filenames to be matched.
-	 * @return A <code>List</code> of {@link File} objects representing all matching files in
-	 *         the directory and its sub-directories.
+	 * @return A <code>List</code> of {@link File} objects representing all
+	 *         matching files in the directory and its sub-directories.
 	 */
 	private static final List<File> getDirContents(final File indir,
 			final FilenameFilter filenameFilter) {
@@ -106,8 +108,8 @@ public abstract class FileReader<T> {
 	 * 
 	 * @param indir
 	 *            The directory of files to be read.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input files.
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input files.
 	 * @throws IOException
 	 *             If the <code>indir</code> is not a valid directory or another
 	 *             I/O error occurs.
@@ -118,8 +120,8 @@ public abstract class FileReader<T> {
 	public final Map<String, T> readDir(final File indir) throws IOException,
 			Exception {
 		final List<File> dirFiles = getDirContents(indir);
-		final Map<String, T> dirContents = new HashMap<String, T>(dirFiles
-				.size());
+		final Map<String, T> dirContents = new HashMap<String, T>(
+				dirFiles.size());
 
 		for (final File file : dirFiles) {
 			final T fileContents = readFile(file);
@@ -137,9 +139,10 @@ public abstract class FileReader<T> {
 	 * @param indir
 	 *            The directory of files to be read.
 	 * @param filenameFilter
-	 *            A <code>FilenameFilter</code> denoting the filenames to be read.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input files.
+	 *            A <code>FilenameFilter</code> denoting the filenames to be
+	 *            read.
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input files.
 	 * @throws IOException
 	 *             If the <code>indir</code> is not a valid directory or another
 	 *             I/O error occurs.
@@ -150,8 +153,8 @@ public abstract class FileReader<T> {
 	public final Map<String, T> readDir(final File indir,
 			final FilenameFilter filenameFilter) throws IOException, Exception {
 		final List<File> dirFiles = getDirContents(indir, filenameFilter);
-		final Map<String, T> dirContents = new HashMap<String, T>(dirFiles
-				.size());
+		final Map<String, T> dirContents = new HashMap<String, T>(
+				dirFiles.size());
 
 		for (final File file : dirFiles) {
 			final T fileContents = readFile(file);
@@ -167,8 +170,8 @@ public abstract class FileReader<T> {
 	 * 
 	 * @param indir
 	 *            The directory of files to be read.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input files.
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input files.
 	 * @throws IOException
 	 *             If the <code>indir</code> is not a valid directory or another
 	 *             I/O error occurs.
@@ -189,9 +192,10 @@ public abstract class FileReader<T> {
 	 * @param indir
 	 *            The directory of files to be read.
 	 * @param filenameFilter
-	 *            A <code>FilenameFilter</code> denoting the filenames to be read.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input files.
+	 *            A <code>FilenameFilter</code> denoting the filenames to be
+	 *            read.
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input files.
 	 * @throws IOException
 	 *             If the <code>indir</code> is not a valid directory or another
 	 *             I/O error occurs.
@@ -243,8 +247,8 @@ public abstract class FileReader<T> {
 	 * 
 	 * @param inpath
 	 *            The path to be read.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input file(s).
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input file(s).
 	 * @throws IOException
 	 *             If <code>inpath</code> is not a valid path or another I/O
 	 *             error occurs.
@@ -280,10 +284,10 @@ public abstract class FileReader<T> {
 	 * @param inpath
 	 *            The path to be read.
 	 * @param filenameFilter
-	 *            A <code>FilenameFilter</code> denoting the filenames to be read in
-	 *            the case that the path refers to a directory.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input file(s).
+	 *            A <code>FilenameFilter</code> denoting the filenames to be
+	 *            read in the case that the path refers to a directory.
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input file(s).
 	 * @throws IOException
 	 *             If <code>inpath</code> is not a valid path or another I/O
 	 *             error occurs.
@@ -318,8 +322,8 @@ public abstract class FileReader<T> {
 	 * 
 	 * @param inpath
 	 *            The path to be read.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input file(s).
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input file(s).
 	 * @throws IOException
 	 *             If <code>inpath</code> is not a valid path or another I/O
 	 *             error occurs.
@@ -342,8 +346,8 @@ public abstract class FileReader<T> {
 	 * @param filenameFilter
 	 *            A <code>FilenameFilter</code> denoting the files to be read in
 	 *            the case that the path refers to a directory.
-	 * @return A <code>Map</code> of filenames as keys with objects as values representing
-	 *         the input file(s).
+	 * @return A <code>Map</code> of filenames as keys with objects as values
+	 *         representing the input file(s).
 	 * @throws IOException
 	 *             If <code>inpath</code> is not a valid path or another I/O
 	 *             error occurs.

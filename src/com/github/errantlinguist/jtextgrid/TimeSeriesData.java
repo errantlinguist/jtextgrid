@@ -58,8 +58,24 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		this.startTime = startTime;
 		this.endTime = endTime;
 
-		this.precachedHashCode = precacheHashCode();
+		this.precachedHashCode = calculateHashCode();
 
+	}
+
+	/**
+	 * Pre-caches the hash code for final members.
+	 * 
+	 * @return The hash code for final members.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(endTime);
+		result = prime * result + (int) (temp ^ temp >>> 32);
+		temp = Double.doubleToLongBits(startTime);
+		result = prime * result + (int) (temp ^ temp >>> 32);
+		return result;
 	}
 
 	/*
@@ -150,30 +166,6 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		return precachedHashCode;
 	}
 
-	/**
-	 * 
-	 * @return The temporal length of the data.
-	 */
-	public final double length() {
-		return endTime - startTime;
-	}
-
-	/**
-	 * Pre-caches the hash code for final members.
-	 * 
-	 * @return The hash code for final members.
-	 */
-	private int precacheHashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(endTime);
-		result = prime * result + (int) (temp ^ temp >>> 32);
-		temp = Double.doubleToLongBits(startTime);
-		result = prime * result + (int) (temp ^ temp >>> 32);
-		return result;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -183,10 +175,10 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append(this.getClass().getName());
-		builder.append("[endTime=");
-		builder.append(endTime);
-		builder.append(", startTime=");
+		builder.append("[startTime=");
 		builder.append(startTime);
+		builder.append(", endTime=");
+		builder.append(endTime);
 		builder.append("]");
 		return builder.toString();
 	}
