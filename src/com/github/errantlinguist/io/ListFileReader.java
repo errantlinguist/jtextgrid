@@ -158,7 +158,8 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("ListFileReader[parser=");
+		builder.append(this.getClass().getSimpleName());
+		builder.append("[parser=");
 		builder.append(parser);
 		builder.append("]");
 		return builder.toString();

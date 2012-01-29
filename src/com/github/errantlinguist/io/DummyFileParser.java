@@ -49,7 +49,7 @@ public final class DummyFileParser implements FileParser<String> {
 	 * 
 	 * @return The static singleton {@link DummyFileParser} instance.
 	 */
-	public static final DummyFileParser getInstance() {
+	public static DummyFileParser getInstance() {
 		return SingletonHolder.INSTANCE;
 	}
 

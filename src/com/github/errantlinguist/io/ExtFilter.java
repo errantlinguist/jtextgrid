@@ -101,7 +101,8 @@ public class ExtFilter implements FilenameFilter {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("ExtFilter[ext=");
+		builder.append(this.getClass().getSimpleName());
+		builder.append("[ext=");
 		builder.append(ext);
 		builder.append("]");
 		return builder.toString();

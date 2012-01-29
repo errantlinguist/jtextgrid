@@ -239,7 +239,8 @@ public class XmlFileParser implements FileParser<Document> {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("XmlFileParser[xmlDeclaration=");
+		builder.append(this.getClass().getSimpleName());
+		builder.append("[xmlDeclaration=");
 		builder.append(xmlDeclaration);
 		builder.append("]");
 		return builder.toString();
