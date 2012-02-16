@@ -552,12 +552,52 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof TextGridFileReader)) {
+			return false;
+		}
+		final TextGridFileReader<?> other = (TextGridFileReader<?>) obj;
+		if (parser == null) {
+			if (other.parser != null) {
+				return false;
+			}
+		} else if (!parser.equals(other.parser)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * 
 	 * @return the tierClass
 	 */
 	private TierClass getTierClass() {
 		return tierClass;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (parser == null ? 0 : parser.hashCode());
+		return result;
 	}
 
 	/**

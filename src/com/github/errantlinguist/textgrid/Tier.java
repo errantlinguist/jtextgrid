@@ -115,7 +115,7 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 	/**
 	 * The tier class.
 	 */
-	protected final TierClass tierClass;
+	private final TierClass tierClass;
 
 	/**
 	 * @param tgf

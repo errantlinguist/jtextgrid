@@ -41,7 +41,7 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 	/**
 	 * The hash code for final members.
 	 */
-	private final int precachedHashCode;
+	private final int hashCode;
 
 	/**
 	 * The end time of the data.
@@ -58,7 +58,7 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		this.startTime = startTime;
 		this.endTime = endTime;
 
-		this.precachedHashCode = calculateHashCode();
+		this.hashCode = calculateHashCode();
 
 	}
 
@@ -166,7 +166,7 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 	 */
 	@Override
 	public int hashCode() {
-		return precachedHashCode;
+		return hashCode;
 	}
 
 	/*

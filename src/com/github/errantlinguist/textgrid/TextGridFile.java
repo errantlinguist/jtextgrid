@@ -48,7 +48,7 @@ public class TextGridFile<T> extends
 	 * All {@link Entry} objects in all {@link Tier} objects representing the
 	 * TextGrid tiers.
 	 */
-	protected final NavigableSet<Entry<T>> entries;
+	private final NavigableSet<Entry<T>> entries;
 
 	// public static void main(final String[] args) throws IOException,
 	// Exception {
@@ -367,6 +367,33 @@ public class TextGridFile<T> extends
 		return entries.size();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof TextGridFile)) {
+			return false;
+		}
+		final TextGridFile<?> other = (TextGridFile<?>) obj;
+		if (entries == null) {
+			if (other.entries != null) {
+				return false;
+			}
+		} else if (!entries.equals(other.entries)) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * @return the entries
 	 */
@@ -425,6 +452,19 @@ public class TextGridFile<T> extends
 	 */
 	public Map<String, Tier<T>> getTiersByName() {
 		return tiersByName;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (entries == null ? 0 : entries.hashCode());
+		return result;
 	}
 
 	/**

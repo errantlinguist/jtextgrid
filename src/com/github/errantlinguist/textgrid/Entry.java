@@ -35,12 +35,12 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 	/**
 	 * The annotation data the entry represents.
 	 */
-	protected final D data;
+	private final D data;
 
 	/**
 	 * The hash code for final members.
 	 */
-	private final int precachedHashCode;
+	private final int hashCode;
 
 	/**
 	 * The {@link Tier} representing the tier the entry is on.
@@ -64,7 +64,7 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 		this.tier = tier;
 		this.data = data;
 
-		this.precachedHashCode = calculateHashCode();
+		this.hashCode = calculateHashCode();
 	}
 
 	/**
@@ -190,7 +190,7 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 	 */
 	@Override
 	public int hashCode() {
-		return precachedHashCode;
+		return hashCode;
 	}
 
 	/**
