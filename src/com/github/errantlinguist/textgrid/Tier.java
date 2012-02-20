@@ -61,16 +61,6 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 
 		private static final Map<String, TierClass> CLASS_NAMES = createStaticClassNameMap();
 
-		private static final Map<String, TierClass> createStaticClassNameMap() {
-
-			final Map<String, TierClass> classNames = new HashMap<String, TierClass>(
-					TierClass.values().length);
-			for (final TierClass tierClass : TierClass.values()) {
-				classNames.put(tierClass.getName(), tierClass);
-			}
-			return Collections.unmodifiableMap(classNames);
-		}
-
 		/**
 		 * Gets the {@link TierClass} represented by the given string name,
 		 * corresponding to the name as defined in the TextGrid file.
@@ -81,6 +71,16 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 		 */
 		public static TierClass getTierClass(final String name) {
 			return CLASS_NAMES.get(name);
+		}
+
+		private static final Map<String, TierClass> createStaticClassNameMap() {
+
+			final Map<String, TierClass> classNames = new HashMap<String, TierClass>(
+					TierClass.values().length);
+			for (final TierClass tierClass : TierClass.values()) {
+				classNames.put(tierClass.getName(), tierClass);
+			}
+			return Collections.unmodifiableMap(classNames);
 		}
 
 		/**
@@ -113,6 +113,11 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 	private TextGridFile<D> file;
 
 	/**
+	 * The pre-cached hash code.
+	 */
+	private final int hashCode;
+
+	/**
 	 * The tier class.
 	 */
 	private final TierClass tierClass;
@@ -134,6 +139,8 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 
 		this.file = tgf;
 		this.tierClass = tierClass;
+
+		this.hashCode = calculateHashCode();
 	}
 
 	/**
@@ -153,10 +160,12 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 	Tier(final TextGridFile<D> tgf, final TierClass tierClass,
 			final double startTime, final double endTime, final int size) {
 
-		super(startTime, endTime);
+		super(startTime, endTime, size);
 
 		this.file = tgf;
 		this.tierClass = tierClass;
+
+		this.hashCode = calculateHashCode();
 
 	}
 
@@ -276,61 +285,6 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 		}
 	}
 
-	/**
-	 * Adds a new {@link Entry}.
-	 * 
-	 * @param entry
-	 *            The <code>Entry</code> to add.
-	 * @return The index of the newly-added <code>Entry</code>.
-	 */
-	private boolean addNew(final Entry<D> entry) {
-		final int index = getNextFreeIndex();
-		addNew(index, entry);
-		setLastAutomaticallyAddedIndex(index);
-		return true;
-
-	}
-
-	/**
-	 * Adds an {@link Entry} at a given index.
-	 * 
-	 * @param index
-	 *            The index to add at.
-	 * @param entry
-	 *            The <code>Entry</code> to add.
-	 */
-	private void addNew(final int index, final Entry<D> entry) {
-		super.add(index, entry);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
-	 */
-	@Override
-	protected int deepCompareTo(final Tier<D> arg0) {
-
-		int comp = 0;
-
-		// if (index < arg0.index) {
-		// comp = -1;
-		// } else if (index > arg0.index) {
-		// comp = 1;
-		//
-		// } else {
-
-		if (size() < arg0.size()) {
-			comp = -1;
-		} else if (size() > arg0.size()) {
-			comp = 1;
-		}
-
-		// }
-		return comp;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -356,13 +310,6 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * @return the file
-	 */
-	protected TextGridFile<D> getFile() {
-		return file;
 	}
 
 	/**
@@ -393,19 +340,7 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		// result = prime * result + index;
-		result = prime * result
-				+ (tierClass == null ? 0 : tierClass.hashCode());
-		// If the TextGrid file is not null, add the hash of the tier index
-		if (file != null) {
-			final Integer index = getIndex();
-			result = prime * result + (index == null ? 0 : index.hashCode());
-		} else {
-			result = prime * result;
-		}
-		return result;
+		return hashCode;
 	}
 
 	/*
@@ -420,14 +355,6 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 		return super.set(index, entry);
 	}
 
-	/**
-	 * @param file
-	 *            the file to set
-	 */
-	protected void setFile(final TextGridFile<D> file) {
-		this.file = file;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -435,7 +362,8 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
+		final int estimatedStringLength = estimateStringLength();
+		final StringBuilder builder = new StringBuilder(estimatedStringLength);
 		builder.append(this.getClass().getSimpleName());
 		builder.append("[tierClass=");
 		builder.append(tierClass);
@@ -447,6 +375,120 @@ public class Tier<D> extends TimeSeriesDataList<Entry<D>, Tier<D>> {
 		builder.append(getElements());
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * Adds a new {@link Entry}.
+	 * 
+	 * @param entry
+	 *            The <code>Entry</code> to add.
+	 * @return The index of the newly-added <code>Entry</code>.
+	 */
+	private boolean addNew(final Entry<D> entry) {
+		final int index = getNextFreeIndex();
+		addNew(index, entry);
+		setLastAutomaticallyAddedIndex(index);
+		return true;
+
+	}
+
+	/**
+	 * Adds an {@link Entry} at a given index.
+	 * 
+	 * @param index
+	 *            The index to add at.
+	 * @param entry
+	 *            The <code>Entry</code> to add.
+	 */
+	private void addNew(final int index, final Entry<D> entry) {
+		super.add(index, entry);
+
+	}
+
+	/**
+	 * 
+	 * @return The hash code.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		// result = prime * result + index;
+		result = prime * result
+				+ (tierClass == null ? 0 : tierClass.hashCode());
+		// If the TextGrid file is not null, add the hash of the tier index
+		// if (file != null) {
+		// final Integer index = getIndex();
+		// result = prime * result + (index == null ? 0 : index.hashCode());
+		// } else {
+		// result = prime * result;
+		// }
+		return result;
+	}
+
+	/**
+	 * Estimates the length of a string representation of the tier {@link Entry
+	 * entries}.
+	 * 
+	 * @return The estimated length of the string representation of the child
+	 *         entries.
+	 */
+	private int estimateEntryStringLength() {
+		return size() * Entry.ESTIMATED_STRING_LENGTH;
+	}
+
+	/**
+	 * Estimates the length of the string representation of this object.
+	 * 
+	 * @return The estimated length of the string representation.
+	 */
+	private int estimateStringLength() {
+		int estimatedStringLength = estimateEntryStringLength();
+		// Add some extra length for misc. padding
+		estimatedStringLength += 32;
+
+		return estimatedStringLength;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
+	 */
+	@Override
+	protected int deepCompareTo(final Tier<D> arg0) {
+
+		int comp = 0;
+
+		// if (index < arg0.index) {
+		// comp = -1;
+		// } else if (index > arg0.index) {
+		// comp = 1;
+		//
+		// } else {
+
+		if (size() < arg0.size()) {
+			comp = -1;
+		} else if (size() > arg0.size()) {
+			comp = 1;
+		}
+
+		// }
+		return comp;
+	}
+
+	/**
+	 * @return the file
+	 */
+	protected TextGridFile<D> getFile() {
+		return file;
+	}
+
+	/**
+	 * @param file
+	 *            the file to set
+	 */
+	protected void setFile(final TextGridFile<D> file) {
+		this.file = file;
 	}
 
 }

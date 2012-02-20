@@ -32,6 +32,12 @@ import java.io.FilenameFilter;
  */
 public class ExtFilter implements FilenameFilter {
 
+	/**
+	 * A constant value used for estimating the length of the string
+	 * representation of the object returned by {@link #toString()}.
+	 */
+	private static final int ESTIMATED_STRING_LENGTH = 32;
+
 	private final String ext;
 
 	/**
@@ -59,17 +65,6 @@ public class ExtFilter implements FilenameFilter {
 	@Override
 	public boolean accept(final File dir, final String name) {
 		return name.endsWith(ext);
-	}
-
-	/**
-	 * 
-	 * @return The hash code.
-	 */
-	private int calculateHashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (ext == null ? 0 : ext.hashCode());
-		return result;
 	}
 
 	/*
@@ -123,12 +118,23 @@ public class ExtFilter implements FilenameFilter {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder(ESTIMATED_STRING_LENGTH);
 		final String className = this.getClass().getSimpleName();
 		builder.append(className);
 		builder.append("[ext=");
 		builder.append(ext);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * 
+	 * @return The hash code.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (ext == null ? 0 : ext.hashCode());
+		return result;
 	}
 }

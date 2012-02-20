@@ -56,16 +56,6 @@ public final class DummyFileParser implements FileParser<String> {
 	private DummyFileParser() {
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
-	}
-
 	@Override
 	public final String parse(final String line) throws Exception {
 		return line;

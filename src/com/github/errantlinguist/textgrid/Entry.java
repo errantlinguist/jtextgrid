@@ -33,6 +33,12 @@ package com.github.errantlinguist.textgrid;
 public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 
 	/**
+	 * A constant value used for estimating the length of the string
+	 * representation of the object returned by {@link #toString()}.
+	 */
+	protected static final int ESTIMATED_STRING_LENGTH = 128;
+
+	/**
 	 * The annotation data the entry represents.
 	 */
 	private final D data;
@@ -58,13 +64,84 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 	 * @param data
 	 *            The annotation data the entry represents.
 	 */
-	Entry(final Tier<D> tier, final double startTime, final double endTime,
-			final D data) {
+	protected Entry(final Tier<D> tier, final double startTime,
+			final double endTime, final D data) {
 		super(startTime, endTime);
 		this.tier = tier;
 		this.data = data;
 
 		this.hashCode = calculateHashCode();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!super.equals(obj)) {
+			return false;
+		}
+		if (!(obj instanceof Entry<?>)) {
+			return false;
+		}
+		final Entry<?> other = (Entry<?>) obj;
+		if (data == null) {
+			if (other.data != null) {
+				return false;
+			}
+		} else if (!data.equals(other.data)) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @return the data
+	 */
+	public D getData() {
+		return data;
+	}
+
+	/**
+	 * @return The index of the entry.
+	 */
+	public Integer getIndex() {
+		return tier.getIndex(this);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return hashCode;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder(ESTIMATED_STRING_LENGTH);
+		builder.append(this.getClass().getSimpleName());
+		builder.append("[startTime=");
+		builder.append(startTime);
+		builder.append(", endTime=");
+		builder.append(endTime);
+		builder.append(", data=");
+		builder.append(data);
+		builder.append("]");
+		return builder.toString();
 	}
 
 	/**
@@ -134,63 +211,11 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 		return comp;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof Entry<?>)) {
-			return false;
-		}
-		final Entry<?> other = (Entry<?>) obj;
-		if (data == null) {
-			if (other.data != null) {
-				return false;
-			}
-		} else if (!data.equals(other.data)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	/**
-	 * @return the data
-	 */
-	public D getData() {
-		return data;
-	}
-
-	/**
-	 * @return The index of the entry.
-	 */
-	public Integer getIndex() {
-		return tier.getIndex(this);
-	}
-
 	/**
 	 * @return the tier
 	 */
 	protected Tier<D> getTier() {
 		return tier;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		return hashCode;
 	}
 
 	/**
@@ -199,24 +224,5 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 	 */
 	protected void setTier(final Tier<D> tier) {
 		this.tier = tier;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(this.getClass().getSimpleName());
-		builder.append("[startTime=");
-		builder.append(startTime);
-		builder.append(", endTime=");
-		builder.append(endTime);
-		builder.append(", data=");
-		builder.append(data);
-		builder.append("]");
-		return builder.toString();
 	}
 }

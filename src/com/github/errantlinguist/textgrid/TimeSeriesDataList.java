@@ -230,34 +230,6 @@ public abstract class TimeSeriesDataList<E, T extends TimeSeriesDataList<?, ?>>
 
 	}
 
-	/**
-	 * Adds an element to a previously-unassigned index.
-	 * 
-	 * @param index
-	 *            The index to assign the newly-added element to.
-	 * @param element
-	 *            The element to add.
-	 */
-	private void addNewElement(final int index, final E element) {
-		elements.set(index, element);
-		elementIndices.put(element, index);
-	}
-
-	/**
-	 * Adds an element to a previously-unassigned index, extending
-	 * {@link #elements} if necessary.
-	 * 
-	 * @param index
-	 *            The index to assign the newly-added element to.
-	 * @param element
-	 *            The element to add.
-	 */
-	private void addNewElementExtend(final int index, final E element) {
-		ensureValidIndex(elements, index);
-		elements.set(index, element);
-		elementIndices.put(element, index);
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -356,29 +328,6 @@ public abstract class TimeSeriesDataList<E, T extends TimeSeriesDataList<?, ?>>
 		return elementIndices.get(element);
 	}
 
-	/**
-	 * @return the lastAutomaticallyAddedIndex
-	 */
-	protected int getLastAutomaticallyAddedIndex() {
-		return lastAutomaticallyAddedIndex;
-	}
-
-	/**
-	 * Gets the next free index for automatically assigning to a newly-added
-	 * element.
-	 * 
-	 * @return The next free index.
-	 */
-	protected int getNextFreeIndex() {
-		int nextFreeIndex = getLastAutomaticallyAddedIndex() + 1;
-		while (isAssigned(nextFreeIndex)) {
-			nextFreeIndex++;
-		}
-
-		return nextFreeIndex;
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -401,35 +350,6 @@ public abstract class TimeSeriesDataList<E, T extends TimeSeriesDataList<?, ?>>
 	@Override
 	public int indexOf(final Object arg0) {
 		return elementIndices.get(arg0);
-	}
-
-	/**
-	 * Checks if a given integer has already been used as an index for an
-	 * element.
-	 * 
-	 * @param index
-	 *            The index to check.
-	 * @return <code>true</code> iff there is an element with the given index.
-	 */
-	private boolean isAssigned(final int index) {
-		final boolean isAssigned;
-		// If the size of the list is equal to or less than the given
-		// entry index
-		// (e.g. index), it cannot exist
-		if (elements.size() <= index) {
-			isAssigned = false;
-		} else {
-			final E element = elements.get(index);
-			// If the element reference is null, it has not been added yet even
-			// though elements with greater indices already have been
-			if (element == null) {
-				isAssigned = false;
-			} else {
-				isAssigned = true;
-			}
-		}
-
-		return isAssigned;
 	}
 
 	/*
@@ -565,15 +485,6 @@ public abstract class TimeSeriesDataList<E, T extends TimeSeriesDataList<?, ?>>
 	}
 
 	/**
-	 * @param lastAutomaticallyAddedIndex
-	 *            the lastAutomaticallyAddedIndex to set
-	 */
-	protected void setLastAutomaticallyAddedIndex(
-			final int lastAutomaticallyAddedIndex) {
-		this.lastAutomaticallyAddedIndex = lastAutomaticallyAddedIndex;
-	}
-
-	/**
 	 * 
 	 * @return The number of elements.
 	 */
@@ -625,6 +536,95 @@ public abstract class TimeSeriesDataList<E, T extends TimeSeriesDataList<?, ?>>
 		builder.append(elements);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * Adds an element to a previously-unassigned index.
+	 * 
+	 * @param index
+	 *            The index to assign the newly-added element to.
+	 * @param element
+	 *            The element to add.
+	 */
+	private void addNewElement(final int index, final E element) {
+		elements.set(index, element);
+		elementIndices.put(element, index);
+	}
+
+	/**
+	 * Adds an element to a previously-unassigned index, extending
+	 * {@link #elements} if necessary.
+	 * 
+	 * @param index
+	 *            The index to assign the newly-added element to.
+	 * @param element
+	 *            The element to add.
+	 */
+	private void addNewElementExtend(final int index, final E element) {
+		ensureValidIndex(elements, index);
+		elements.set(index, element);
+		elementIndices.put(element, index);
+	}
+
+	/**
+	 * Checks if a given integer has already been used as an index for an
+	 * element.
+	 * 
+	 * @param index
+	 *            The index to check.
+	 * @return <code>true</code> iff there is an element with the given index.
+	 */
+	private boolean isAssigned(final int index) {
+		final boolean isAssigned;
+		// If the size of the list is equal to or less than the given
+		// entry index
+		// (e.g. index), it cannot exist
+		if (elements.size() <= index) {
+			isAssigned = false;
+		} else {
+			final E element = elements.get(index);
+			// If the element reference is null, it has not been added yet even
+			// though elements with greater indices already have been
+			if (element == null) {
+				isAssigned = false;
+			} else {
+				isAssigned = true;
+			}
+		}
+
+		return isAssigned;
+	}
+
+	/**
+	 * @return the lastAutomaticallyAddedIndex
+	 */
+	protected int getLastAutomaticallyAddedIndex() {
+		return lastAutomaticallyAddedIndex;
+	}
+
+	/**
+	 * Gets the next free index for automatically assigning to a newly-added
+	 * element.
+	 * 
+	 * @return The next free index.
+	 */
+	protected int getNextFreeIndex() {
+		int nextFreeIndex = getLastAutomaticallyAddedIndex() + 1;
+		while (isAssigned(nextFreeIndex)) {
+			nextFreeIndex++;
+		}
+
+		return nextFreeIndex;
+
+	}
+
+	/**
+	 * @param lastAutomaticallyAddedIndex
+	 *            the lastAutomaticallyAddedIndex to set
+	 */
+	protected void setLastAutomaticallyAddedIndex(
+			final int lastAutomaticallyAddedIndex) {
+		this.lastAutomaticallyAddedIndex = lastAutomaticallyAddedIndex;
 	}
 
 }

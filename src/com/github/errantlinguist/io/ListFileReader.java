@@ -58,6 +58,12 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	}
 
 	/**
+	 * A constant value used for estimating the length of the string
+	 * representation of the object returned by {@link #toString()}.
+	 */
+	protected static final int ESTIMATED_STRING_LENGTH = 64;
+
+	/**
 	 * 
 	 * @return The static singleton {{@link ListFileReader} instance with a
 	 *         {@link DummyFileParser} for {@link ListFileReader#parser}.
@@ -67,9 +73,14 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	}
 
 	/**
+	 * The pre-cached hash code.
+	 */
+	private final int hashCode;
+
+	/**
 	 * The {@link FileParser} to be used for parsing files.
 	 */
-	protected final FileParser<T> parser;
+	private final FileParser<T> parser;
 
 	/**
 	 * 
@@ -78,6 +89,8 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	 */
 	public ListFileReader(final FileParser<T> parser) {
 		this.parser = parser;
+
+		this.hashCode = calculateHashCode();
 	}
 
 	/*
@@ -107,6 +120,13 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 		return true;
 	}
 
+	/**
+	 * @return the parser
+	 */
+	public FileParser<T> getParser() {
+		return parser;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -114,10 +134,7 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (parser == null ? 0 : parser.hashCode());
-		return result;
+		return hashCode;
 	}
 
 	/**
@@ -157,12 +174,24 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(this.getClass().getSimpleName());
+		final StringBuilder builder = new StringBuilder(ESTIMATED_STRING_LENGTH);
+		final String className = this.getClass().getSimpleName();
+		builder.append(className);
 		builder.append("[parser=");
 		builder.append(parser);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * 
+	 * @return The hash code.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (parser == null ? 0 : parser.hashCode());
+		return result;
 	}
 
 }

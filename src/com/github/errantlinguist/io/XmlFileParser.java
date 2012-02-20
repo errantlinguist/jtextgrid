@@ -60,6 +60,12 @@ public class XmlFileParser implements FileParser<Document> {
 	private static final Pattern EMPTY_PATTERN = Pattern.compile("\\s*");
 
 	/**
+	 * A constant value used for estimating the length of the string
+	 * representation of the object returned by {@link #toString()}.
+	 */
+	protected static final int ESTIMATED_STRING_LENGTH = 32;
+
+	/**
 	 * Creates an XML declaration for appending to XML {@link String strings}
 	 * which do not feature one.
 	 * 
@@ -87,6 +93,11 @@ public class XmlFileParser implements FileParser<Document> {
 	private final DocumentBuilder db;
 
 	private final DocumentBuilderFactory dbf;
+
+	/**
+	 * The pre-cached hash code.
+	 */
+	private final int hashCode;
 
 	private final InputSource inSource;
 
@@ -124,6 +135,8 @@ public class XmlFileParser implements FileParser<Document> {
 		db = dbf.newDocumentBuilder();
 
 		xmlDeclaration = makeXMLDeclaration(xmlVersion, encoding);
+
+		hashCode = calculateHashCode();
 	}
 
 	/**
@@ -197,11 +210,7 @@ public class XmlFileParser implements FileParser<Document> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ (xmlDeclaration == null ? 0 : xmlDeclaration.hashCode());
-		return result;
+		return hashCode;
 	}
 
 	/*
@@ -238,12 +247,24 @@ public class XmlFileParser implements FileParser<Document> {
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder();
+		final StringBuilder builder = new StringBuilder(ESTIMATED_STRING_LENGTH);
 		builder.append(this.getClass().getSimpleName());
 		builder.append("[xmlDeclaration=");
 		builder.append(xmlDeclaration);
 		builder.append("]");
 		return builder.toString();
+	}
+
+	/**
+	 * 
+	 * @return The hash code.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ (xmlDeclaration == null ? 0 : xmlDeclaration.hashCode());
+		return result;
 	}
 
 }

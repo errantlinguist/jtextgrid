@@ -506,6 +506,11 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 
 	private double fileStartTime;
 
+	/**
+	 * The pre-cached hash code.
+	 */
+	private final int hashCode;
+
 	private final FileParser<T> parser;
 
 	private TextGridFile<T> tgf;
@@ -531,25 +536,8 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	 */
 	public TextGridFileReader(final FileParser<T> parser) {
 		this.parser = parser;
-	}
 
-	/**
-	 * Constructs and adds a new {@link Entry} object with the current entry
-	 * details to the currently {@link Tier} object.
-	 */
-	private void addNewEntry() {
-		tier.add(entryIndex, entryStartTime, entryEndTime, entryData);
-	}
-
-	/**
-	 * Constructs a new {@link Tier} object with the current tier details to the
-	 * current {@link TextGridFile} object and sets it as the current
-	 * <code>Tier</code> being added to.
-	 */
-	private void addNewTier() {
-		tier = tgf.add(tierIndex, tierClass, tierName, tierStartTime,
-				tierEndTime, tierSize);
-
+		this.hashCode = calculateHashCode();
 	}
 
 	/*
@@ -579,14 +567,6 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 		return true;
 	}
 
-	/**
-	 * 
-	 * @return the tierClass
-	 */
-	private TierClass getTierClass() {
-		return tierClass;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -594,32 +574,7 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (parser == null ? 0 : parser.hashCode());
-		return result;
-	}
-
-	/**
-	 * Constructs a new {@link TextGridFile} object using the current file
-	 * details and sets it to the current <code>TextGridFile</code> object being
-	 * added to.
-	 */
-	private void makeNewTextGridFile() {
-		tgf = new TextGridFile<T>(fileStartTime, fileEndTime, fileSize);
-
-	}
-
-	/**
-	 * Parses a {@link String} of data with the set {@link TextGridFileReader}.
-	 * 
-	 * @param data
-	 *            The <code>String</code> to be parsed.
-	 * @throws Exception
-	 *             If there is a parsing error.
-	 */
-	private void parseEntryData(final String data) throws Exception {
-		entryData = parser.parse(data);
+		return hashCode;
 	}
 
 	/**
@@ -670,6 +625,66 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 		isr.close();
 
 		return tgf;
+	}
+
+	/**
+	 * Constructs and adds a new {@link Entry} object with the current entry
+	 * details to the currently {@link Tier} object.
+	 */
+	private void addNewEntry() {
+		tier.add(entryIndex, entryStartTime, entryEndTime, entryData);
+	}
+
+	/**
+	 * Constructs a new {@link Tier} object with the current tier details to the
+	 * current {@link TextGridFile} object and sets it as the current
+	 * <code>Tier</code> being added to.
+	 */
+	private void addNewTier() {
+		tier = tgf.add(tierIndex, tierClass, tierName, tierStartTime,
+				tierEndTime, tierSize);
+
+	}
+
+	/**
+	 * 
+	 * @return The hash code.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (parser == null ? 0 : parser.hashCode());
+		return result;
+	}
+
+	/**
+	 * 
+	 * @return the tierClass
+	 */
+	private TierClass getTierClass() {
+		return tierClass;
+	}
+
+	/**
+	 * Constructs a new {@link TextGridFile} object using the current file
+	 * details and sets it to the current <code>TextGridFile</code> object being
+	 * added to.
+	 */
+	private void makeNewTextGridFile() {
+		tgf = new TextGridFile<T>(fileStartTime, fileEndTime, fileSize);
+
+	}
+
+	/**
+	 * Parses a {@link String} of data with the set {@link TextGridFileReader}.
+	 * 
+	 * @param data
+	 *            The <code>String</code> to be parsed.
+	 * @throws Exception
+	 *             If there is a parsing error.
+	 */
+	private void parseEntryData(final String data) throws Exception {
+		entryData = parser.parse(data);
 	}
 
 	/**
@@ -815,53 +830,6 @@ public class TextGridFileReader<T> extends FileReader<TextGridFile<T>> {
 	private void setTierStartTime(final double time) {
 		tierStartTime = time;
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(this.getClass().getSimpleName());
-		builder.append("[currentSection=");
-		builder.append(currentSection);
-		builder.append(", entryData=");
-		builder.append(entryData);
-		builder.append(", entryEndTime=");
-		builder.append(entryEndTime);
-		builder.append(", entryIndex=");
-		builder.append(entryIndex);
-		builder.append(", entryStartTime=");
-		builder.append(entryStartTime);
-		builder.append(", fileEndTime=");
-		builder.append(fileEndTime);
-		builder.append(", fileSize=");
-		builder.append(fileSize);
-		builder.append(", fileStartTime=");
-		builder.append(fileStartTime);
-		builder.append(", parser=");
-		builder.append(parser);
-		builder.append(", tgf=");
-		builder.append(tgf);
-		builder.append(", tier=");
-		builder.append(tier);
-		builder.append(", tierClass=");
-		builder.append(tierClass);
-		builder.append(", tierEndTime=");
-		builder.append(tierEndTime);
-		builder.append(", tierIndex=");
-		builder.append(tierIndex);
-		builder.append(", tierName=");
-		builder.append(tierName);
-		builder.append(", tierSize=");
-		builder.append(tierSize);
-		builder.append(", tierStartTime=");
-		builder.append(tierStartTime);
-		builder.append("]");
-		return builder.toString();
 	}
 
 }

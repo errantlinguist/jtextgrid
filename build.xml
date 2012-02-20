@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!-- Licensed to the Apache Software Foundation (ASF) under one
+ or more contributor license agreements.  See the NOTICE file
+ distributed with this work for additional information
+ regarding copyright ownership.  The ASF licenses this file
+ to you under the Apache License, Version 2.0 (the
+ "License"); you may not use this file except in compliance
+ with the License.  You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing,
+ software distributed under the License is distributed on an
+ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ KIND, either express or implied.  See the License for the
+ specific language governing permissions and limitations
+ under the License. -->
+ 
+<!-- Ant buildfile for JTextGrid
+AUTHOR: Todd Shore
+VERSION: 2012-02-19
+WEBSITE: https://github.com/errantlinguist/jtextgrid
+LICENSING:
+Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See the files "NOTICE" and "LICENSE".
+-->
+<project basedir="." default="javadoc" name="JTextGrid Javadoc">
+	
+	<target name="javadoc" depends="init.javadoc">
+		<echo message="${ant.project.name}: ${ant.file}"/>
+		<!-- <echo message="Classpath: ${toString:classpath}"/> -->
+		<javadoc access="${javadoc.access}" author="${javadoc.true}" destdir="${javadoc.dir}" nodeprecated="${javadoc.nodeprecated}" nodeprecatedlist="${javadoc.nodeprecatedlist}" noindex="${javadoc.false}" nonavbar="${javadoc.nonavbar}" notree="${javadoc.notree}" packagenames="${javadoc.packagenames}" source="${sourceVersion}" sourcepath="${source.dir}" splitindex="${javadoc.splitindex}" use="${javadoc.use}" version="true">
+			<link href="http://download.oracle.com/javase/6/docs/api/"/>
+		</javadoc>
+    	</target>
+ 
+	<target name="init" description="Sets up the initial environment" >
+		<property file="default.properties"/>	
+	</target>
+	
+	<target name="init.javadoc" depends="init" description="Sets up the initial environment for creating a Javadoc">
+		<property file="javadoc.properties"/>
+	</target>
+    
+   	<target name="cleanjavadoc" depends="init.javadoc" description="Removes Javadoc files">
+		<delete dir="${javadoc.dir}"/>
+	</target>
+	
+	<target name="clean" depends="cleanjavadoc" description="Removes made files" />
+	
+	<target name="cleanall" depends="clean" description="Removes class, JAR and Javadoc files" />
+
+</project>

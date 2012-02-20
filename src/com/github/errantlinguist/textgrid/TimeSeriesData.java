@@ -34,14 +34,14 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		Comparable<T> {
 
 	/**
-	 * The start time of the data.
-	 */
-	protected final double endTime;
-
-	/**
 	 * The hash code for final members.
 	 */
 	private final int hashCode;
+
+	/**
+	 * The start time of the data.
+	 */
+	protected final double endTime;
 
 	/**
 	 * The end time of the data.
@@ -60,22 +60,6 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 
 		this.hashCode = calculateHashCode();
 
-	}
-
-	/**
-	 * Pre-caches the hash code for final members.
-	 * 
-	 * @return The hash code for final members.
-	 */
-	private int calculateHashCode() {
-		final int prime = 31;
-		int result = 1;
-		long temp;
-		temp = Double.doubleToLongBits(endTime);
-		result = prime * result + (int) (temp ^ temp >>> 32);
-		temp = Double.doubleToLongBits(startTime);
-		result = prime * result + (int) (temp ^ temp >>> 32);
-		return result;
 	}
 
 	/*
@@ -104,18 +88,6 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		return comp;
 
 	}
-
-	/**
-	 * Compares this object with another of its type by the data it represents
-	 * rather than simply by comparing their respective start and end times.
-	 * 
-	 * @param arg0
-	 *            The object to compare this object to.
-	 * @return <code>-1</code> if this object is less than the given object,
-	 *         <code>0</code> if they are equal and <code>1</code> if this
-	 *         object is greater than the given one.
-	 */
-	protected abstract int deepCompareTo(final T arg0);
 
 	/*
 	 * (non-Javadoc)
@@ -185,5 +157,33 @@ public abstract class TimeSeriesData<T extends TimeSeriesData<?>> implements
 		builder.append("]");
 		return builder.toString();
 	}
+
+	/**
+	 * Pre-caches the hash code for final members.
+	 * 
+	 * @return The hash code for final members.
+	 */
+	private int calculateHashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(endTime);
+		result = prime * result + (int) (temp ^ temp >>> 32);
+		temp = Double.doubleToLongBits(startTime);
+		result = prime * result + (int) (temp ^ temp >>> 32);
+		return result;
+	}
+
+	/**
+	 * Compares this object with another of its type by the data it represents
+	 * rather than simply by comparing their respective start and end times.
+	 * 
+	 * @param arg0
+	 *            The object to compare this object to.
+	 * @return <code>-1</code> if this object is less than the given object,
+	 *         <code>0</code> if they are equal and <code>1</code> if this
+	 *         object is greater than the given one.
+	 */
+	protected abstract int deepCompareTo(final T arg0);
 
 }

@@ -271,94 +271,6 @@ public class TextGridFile<T> extends
 	}
 
 	/**
-	 * Adds the {@link Entry} objects in a given {@link Collection} thereof to
-	 * the set of all entries.
-	 * 
-	 * @param entries
-	 *            The <code>Collection</code> of <code>Entry</code> objects to
-	 *            add.
-	 * @return <code>true</code> iff the set of <code>Entry</code> objects was
-	 *         changed, i.e.&nbsp;if at least one <code>Entry</code> was added.
-	 */
-	protected final boolean addEntries(final Collection<Entry<T>> entries) {
-
-		boolean wasChanged = false;
-
-		for (final Entry<T> entry : entries) {
-			final boolean wasAdded = this.entries.add(entry);
-			if (wasAdded) {
-				wasChanged = true;
-			}
-
-		}
-
-		return wasChanged;
-	}
-
-	/**
-	 * Adds an {@link Entry} object to the set of all entries.
-	 * 
-	 * @param entry
-	 *            The <code>Entry</code> object to add.
-	 * @return <code>true</code> iff the <code>Entry</code> was successfully
-	 *         added.
-	 */
-	protected final boolean addEntry(final Entry<T> entry) {
-		return entries.add(entry);
-
-	}
-
-	/**
-	 * Adds an {@link Tier} at a given index.
-	 * 
-	 * @param index
-	 *            The index to add at.
-	 * @param tier
-	 *            The <code>Tier</code> to add.
-	 */
-	private void addNew(final int index, final Tier<T> tier) {
-		super.add(index, tier);
-
-	}
-
-	/**
-	 * Adds an {@link Tier} at a given index.
-	 * 
-	 * @param tier
-	 *            The <code>Tier</code> to add.
-	 */
-	private void addNew(final Tier<T> tier) {
-		super.add(tier);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
-	 */
-	@Override
-	protected int deepCompareTo(final TextGridFile<T> arg0) {
-
-		int comp = 0;
-
-		if (entryCount() < arg0.entryCount()) {
-			comp = -1;
-		} else if (entryCount() > arg0.entryCount()) {
-			comp = 1;
-		} else {
-
-			if (size() < arg0.size()) {
-				comp = -1;
-			} else if (size() > arg0.size()) {
-				comp = 1;
-			}
-
-		}
-		return comp;
-	}
-
-	/**
 	 * 
 	 * @return The amount of {@link Entry} objects associated with the
 	 *         <code>TextGridFile</code>.
@@ -467,6 +379,86 @@ public class TextGridFile<T> extends
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.github.errantlinguist.textgrid.TimeSeriesDataList#set(int,
+	 * java.lang.Object)
+	 */
+	@Override
+	public Tier<T> set(final int index, final Tier<T> tier) {
+		tier.setFile(this);
+		return super.set(index, tier);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		final int estimatedStringLength = estimateStringLength();
+		final StringBuilder builder = new StringBuilder(estimatedStringLength);
+		builder.append(this.getClass().getSimpleName());
+		builder.append("[startTime=");
+		builder.append(startTime);
+		builder.append(", endTime=");
+		builder.append(endTime);
+		builder.append(", tiers=");
+		builder.append(getElements());
+		builder.append("]");
+		return builder.toString();
+	}
+
+	/**
+	 * Adds an {@link Tier} at a given index.
+	 * 
+	 * @param index
+	 *            The index to add at.
+	 * @param tier
+	 *            The <code>Tier</code> to add.
+	 */
+	private void addNew(final int index, final Tier<T> tier) {
+		super.add(index, tier);
+
+	}
+
+	/**
+	 * Adds an {@link Tier} at a given index.
+	 * 
+	 * @param tier
+	 *            The <code>Tier</code> to add.
+	 */
+	private void addNew(final Tier<T> tier) {
+		super.add(tier);
+
+	}
+
+	/**
+	 * Estimates the length of the string representation of this object.
+	 * 
+	 * @return The estimated length of the string representation.
+	 */
+	private int estimateStringLength() {
+		int estimatedStringLength = estimateTierStringLength();
+		// Add some extra length for misc. padding
+		estimatedStringLength += 32;
+
+		return estimatedStringLength;
+	}
+
+	/**
+	 * Estimates the length of a string representation of the file {@link Entry
+	 * entries} on all {@link Tier tiers}.
+	 * 
+	 * @return The estimated length of the string representation of the child
+	 *         entries.
+	 */
+	private int estimateTierStringLength() {
+		return entries.size() * (Entry.ESTIMATED_STRING_LENGTH + 32);
+	}
+
 	/**
 	 * Puts a {@link Tier} into the string name mapping.
 	 * 
@@ -479,6 +471,70 @@ public class TextGridFile<T> extends
 		tierNames.put(tier, name);
 		final Tier<T> oldTier = tiersByName.put(name, tier);
 		return oldTier;
+	}
+
+	/**
+	 * Adds the {@link Entry} objects in a given {@link Collection} thereof to
+	 * the set of all entries.
+	 * 
+	 * @param entries
+	 *            The <code>Collection</code> of <code>Entry</code> objects to
+	 *            add.
+	 * @return <code>true</code> iff the set of <code>Entry</code> objects was
+	 *         changed, i.e.&nbsp;if at least one <code>Entry</code> was added.
+	 */
+	protected final boolean addEntries(final Collection<Entry<T>> entries) {
+
+		boolean wasChanged = false;
+
+		for (final Entry<T> entry : entries) {
+			final boolean wasAdded = this.entries.add(entry);
+			if (wasAdded) {
+				wasChanged = true;
+			}
+
+		}
+
+		return wasChanged;
+	}
+
+	/**
+	 * Adds an {@link Entry} object to the set of all entries.
+	 * 
+	 * @param entry
+	 *            The <code>Entry</code> object to add.
+	 * @return <code>true</code> iff the <code>Entry</code> was successfully
+	 *         added.
+	 */
+	protected final boolean addEntry(final Entry<T> entry) {
+		return entries.add(entry);
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
+	 */
+	@Override
+	protected int deepCompareTo(final TextGridFile<T> arg0) {
+
+		int comp = 0;
+
+		if (entryCount() < arg0.entryCount()) {
+			comp = -1;
+		} else if (entryCount() > arg0.entryCount()) {
+			comp = 1;
+		} else {
+
+			if (size() < arg0.size()) {
+				comp = -1;
+			} else if (size() > arg0.size()) {
+				comp = 1;
+			}
+
+		}
+		return comp;
 	}
 
 	/**
@@ -517,36 +573,5 @@ public class TextGridFile<T> extends
 	 */
 	protected final boolean removeEntry(final Entry<T> entry) {
 		return entries.remove(entry);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.github.errantlinguist.textgrid.TimeSeriesDataList#set(int,
-	 * java.lang.Object)
-	 */
-	@Override
-	public Tier<T> set(final int index, final Tier<T> tier) {
-		tier.setFile(this);
-		return super.set(index, tier);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append(this.getClass().getSimpleName());
-		builder.append("[startTime=");
-		builder.append(startTime);
-		builder.append(", endTime=");
-		builder.append(endTime);
-		builder.append(", tiers=");
-		builder.append(getElements());
-		builder.append("]");
-		return builder.toString();
 	}
 }
