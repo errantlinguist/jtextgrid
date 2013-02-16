@@ -9,4 +9,4 @@ A library for processing Praat TextGrid files in Java.
 
 Instructions
 --------------------------------------------------------------------------------
-- To generate a Javadoc, run 'ant'.
+- To generate a Javadoc, run `ant`.
