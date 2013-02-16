@@ -1,6 +1,6 @@
 JTextGrid
 ================================================================================
-A library for processing Praat TextGrid files in Java.
+A library for processing TextGrid files used by the [Praat phonetic analysis software](http://www.fon.hum.uva.nl/praat/) in Java.
 
 * **Version:** 2012-01-16
 * **Author:** Todd Shore
