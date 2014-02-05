@@ -174,41 +174,19 @@ public final class Entry<D> extends TimeSeriesData<Entry<D>> {
 	 */
 	@Override
 	protected int deepCompareTo(final Entry<D> arg0) {
-		int comp = 0;
+		int result = 0;
 
 		// Compare textGridTier indices
 		final int tid1 = tier.getIndex();
 		final int tid2 = arg0.tier.getIndex();
 
 		if (tid1 < tid2) {
-			comp = -1;
+			result = -1;
 		} else if (tid1 < tid2) {
-			comp = 1;
-		} else {
-
-			// Try to compare the entry indices
-			// if (textGridTier != null) {
-			//
-			// if (arg0.textGridTier != null) {
-			// final int id1 = getIndex();
-			// final int id2 = arg0.getIndex();
-			// if (id1 < id2) {
-			// comp = -1;
-			// } else if (id1 < id2) {
-			// comp = 1;
-			// }
-			//
-			// } else {
-			// return -1;
-			// }
-			//
-			// } else if (arg0.textGridTier != null) {
-			// return 1;
-			// }
-
+			result = 1;
 		}
 
-		return comp;
+		return result;
 	}
 
 	/**

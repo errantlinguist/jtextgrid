@@ -50,18 +50,6 @@ public class TextGridFile<T> extends
 	 */
 	private final NavigableSet<Entry<T>> entries;
 
-	// public static void main(final String[] args) throws IOException,
-	// Exception {
-	// final TextGridFileReader<String> reader = TextGridFileReader
-	// .getStringParserInstance();
-	// final TextGridFile<String> tgf = reader
-	// .readFile("input/Lotse.TextGrid");
-	// System.out.println(tgf);
-	// System.out.println(tgf.entryCount());
-	// System.out.println(tgf.tiersByName.keySet());
-	// System.out.println(tgf.tierNames.values());
-	// }
-
 	private final Map<Tier<T>, String> tierNames;
 
 	private final Map<String, Tier<T>> tiersByName;
@@ -129,10 +117,10 @@ public class TextGridFile<T> extends
 	 */
 	public final Tier<T> add(final int index, final TierClass tierClass,
 			final String name, final double startTime, final double endTime) {
-		final Tier<T> newTier = new Tier<T>(this, tierClass, startTime, endTime);
-		addNew(index, newTier);
-		putTierByName(name, newTier);
-		return newTier;
+		final Tier<T> result = new Tier<T>(this, tierClass, startTime, endTime);
+		addNew(index, result);
+		putTierByName(name, result);
+		return result;
 
 	}
 
@@ -158,11 +146,11 @@ public class TextGridFile<T> extends
 	public final Tier<T> add(final int index, final TierClass tierClass,
 			final String name, final double startTime, final double endTime,
 			final int size) {
-		final Tier<T> newTier = new Tier<T>(this, tierClass, startTime,
+		final Tier<T> result = new Tier<T>(this, tierClass, startTime,
 				endTime, size);
-		addNew(index, newTier);
-		putTierByName(name, newTier);
-		return newTier;
+		addNew(index, result);
+		putTierByName(name, result);
+		return result;
 	}
 
 	/*
@@ -195,10 +183,10 @@ public class TextGridFile<T> extends
 	 */
 	public final Tier<T> add(final TierClass tierClass, final String name,
 			final double startTime, final double endTime) {
-		final Tier<T> newTier = new Tier<T>(this, tierClass, startTime, endTime);
-		addNew(newTier);
-		putTierByName(name, newTier);
-		return newTier;
+		final Tier<T> result = new Tier<T>(this, tierClass, startTime, endTime);
+		addNew(result);
+		putTierByName(name, result);
+		return result;
 	}
 
 	/**
@@ -220,11 +208,11 @@ public class TextGridFile<T> extends
 	 */
 	public final Tier<T> add(final TierClass tierClass, final String name,
 			final double startTime, final double endTime, final int size) {
-		final Tier<T> newTier = new Tier<T>(this, tierClass, startTime,
+		final Tier<T> result = new Tier<T>(this, tierClass, startTime,
 				endTime, size);
-		addNew(newTier);
-		putTierByName(name, newTier);
-		return newTier;
+		addNew(result);
+		putTierByName(name, result);
+		return result;
 	}
 
 	/*
@@ -235,16 +223,17 @@ public class TextGridFile<T> extends
 	 * .Collection)
 	 */
 	@Override
-	public boolean addAll(final Collection<? extends Tier<T>> arg0) {
-		boolean wasChanged = false;
-		for (final Tier<T> tier : arg0) {
+	public boolean addAll(final Collection<? extends Tier<T>> tiers) {
+		boolean result = false;
+		
+		for (final Tier<T> tier : tiers) {
 			if (add(tier)) {
 				tier.setFile(this);
-				wasChanged = true;
+				result = true;
 			}
 
 		}
-		return wasChanged;
+		return result;
 	}
 
 	/*
@@ -254,17 +243,17 @@ public class TextGridFile<T> extends
 	 * java.util.Collection)
 	 */
 	@Override
-	public boolean addAll(int arg0, final Collection<? extends Tier<T>> arg1) {
-		if (getElements().size() == arg0) {
-			return addAll(arg1);
+	public boolean addAll(int index, final Collection<? extends Tier<T>> tiers) {
+		if (getElements().size() == index) {
+			return addAll(tiers);
 		} else {
-			shiftRight(getElements(), arg0, getElements().size(), arg1.size());
+			shiftRight(getElements(), index, getElements().size(), tiers.size());
 
-			for (final Tier<T> tier : arg1) {
-				add(arg0, tier);
+			for (final Tier<T> tier : tiers) {
+				add(index, tier);
 				tier.setFile(this);
 				// Increment the index for the next element to be added
-				arg0++;
+				index++;
 			}
 			return false;
 		}

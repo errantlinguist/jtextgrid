@@ -22,11 +22,12 @@ package com.github.errantlinguist.io;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+import java.util.Queue;
 
 /**
  * An abstract file reader class which reads in a data file or a directory of
@@ -50,16 +51,16 @@ public abstract class FileReader<T> {
 	 * @return A <code>List</code> of {@link File} objects representing all
 	 *         matching files in the directory and its sub-directories.
 	 */
-	private static final List<File> getDirContents(final File indir) {
-		final List<File> recursiveContents = new ArrayList<File>();
-		final Stack<File> dirsToExpand = new Stack<File>();
+	private static final List<File> walkDirContents(final File indir) {
+		final List<File> result = new ArrayList<File>();
+		final Queue<File> dirsToExpand = new ArrayDeque<File>();
 		dirsToExpand.add(indir);
 		while (!dirsToExpand.isEmpty()) {
-
-			final File[] dirContents = indir.listFiles();
+			final File dirToExpand = dirsToExpand.remove();
+			final File[] dirContents = dirToExpand.listFiles();
 			for (final File file : dirContents) {
 				if (file.isFile()) {
-					recursiveContents.add(file);
+					result.add(file);
 				} else if (file.isDirectory()) {
 					dirsToExpand.add(file);
 				}
@@ -67,7 +68,7 @@ public abstract class FileReader<T> {
 
 		}
 
-		return recursiveContents;
+		return result;
 	}
 
 	/**
@@ -81,17 +82,17 @@ public abstract class FileReader<T> {
 	 * @return A <code>List</code> of {@link File} objects representing all
 	 *         matching files in the directory and its sub-directories.
 	 */
-	private static final List<File> getDirContents(final File indir,
+	private static final List<File> walkDirContents(final File indir,
 			final FilenameFilter filenameFilter) {
-		final List<File> recursiveContents = new ArrayList<File>();
-		final Stack<File> dirsToExpand = new Stack<File>();
+		final List<File> result = new ArrayList<File>();
+		final Queue<File> dirsToExpand = new ArrayDeque<File>();
 		dirsToExpand.add(indir);
 		while (!dirsToExpand.isEmpty()) {
-
-			final File[] dirContents = indir.listFiles(filenameFilter);
+			final File dirToExpand = dirsToExpand.remove();
+			final File[] dirContents = dirToExpand.listFiles(filenameFilter);
 			for (final File file : dirContents) {
 				if (file.isFile()) {
-					recursiveContents.add(file);
+					result.add(file);
 				} else if (file.isDirectory()) {
 					dirsToExpand.add(file);
 				}
@@ -99,7 +100,7 @@ public abstract class FileReader<T> {
 
 		}
 
-		return recursiveContents;
+		return result;
 	}
 
 	/**
@@ -119,16 +120,16 @@ public abstract class FileReader<T> {
 	 */
 	public final Map<String, T> readDir(final File indir) throws IOException,
 			Exception {
-		final List<File> dirFiles = getDirContents(indir);
-		final Map<String, T> dirContents = new HashMap<String, T>(
+		final List<File> dirFiles = walkDirContents(indir);
+		final Map<String, T> result = new HashMap<String, T>(
 				dirFiles.size());
 
 		for (final File file : dirFiles) {
 			final T fileContents = readFile(file);
-			dirContents.put(file.getCanonicalPath(), fileContents);
+			result.put(file.getCanonicalPath(), fileContents);
 		}
 
-		return dirContents;
+		return result;
 	}
 
 	/**
@@ -152,16 +153,16 @@ public abstract class FileReader<T> {
 	 */
 	public final Map<String, T> readDir(final File indir,
 			final FilenameFilter filenameFilter) throws IOException, Exception {
-		final List<File> dirFiles = getDirContents(indir, filenameFilter);
-		final Map<String, T> dirContents = new HashMap<String, T>(
+		final List<File> dirFiles = walkDirContents(indir, filenameFilter);
+		final Map<String, T> result = new HashMap<String, T>(
 				dirFiles.size());
 
 		for (final File file : dirFiles) {
 			final T fileContents = readFile(file);
-			dirContents.put(file.getCanonicalPath(), fileContents);
+			result.put(file.getCanonicalPath(), fileContents);
 		}
 
-		return dirContents;
+		return result;
 	}
 
 	/**
@@ -258,22 +259,21 @@ public abstract class FileReader<T> {
 	 */
 	public final Map<String, T> readPath(final File inpath) throws IOException,
 			Exception {
+		final Map<String, T> result;
+
 		if (inpath.isDirectory()) {
-			return readDir(inpath);
+			result = readDir(inpath);
+		} else if (inpath.isFile()) {
+			result = new HashMap<String, T>();
+			final T fileContents = readFile(inpath);
+			result.put(inpath.getCanonicalPath(), fileContents);
+
 		} else {
-
-			if (inpath.isFile()) {
-				final Map<String, T> dirContents = new HashMap<String, T>();
-				final T fileContents = readFile(inpath);
-				dirContents.put(inpath.getCanonicalPath(), fileContents);
-				return dirContents;
-
-			} else {
-				throw new IOException("Not a normal file: "
-						+ inpath.getCanonicalPath());
-			}
-
+			throw new IOException("Not a normal file: "
+					+ inpath.getCanonicalPath());
 		}
+
+		return result;
 	}
 
 	/**
@@ -297,22 +297,22 @@ public abstract class FileReader<T> {
 	 */
 	public final Map<String, T> readPath(final File inpath,
 			final FilenameFilter filenameFilter) throws IOException, Exception {
+		final Map<String, T> result;
+		
 		if (inpath.isDirectory()) {
-			return readDir(inpath, filenameFilter);
+			result = readDir(inpath, filenameFilter);
+		} else if (inpath.isFile()) {
+			result = new HashMap<String, T>();
+			final T fileContents = readFile(inpath);
+			result.put(inpath.getCanonicalPath(), fileContents);
+
 		} else {
-
-			if (inpath.isFile()) {
-				final Map<String, T> dirContents = new HashMap<String, T>();
-				final T fileContents = readFile(inpath);
-				dirContents.put(inpath.getCanonicalPath(), fileContents);
-				return dirContents;
-
-			} else {
-				throw new IOException("Not a normal file: "
-						+ inpath.getCanonicalPath());
-			}
-
+			throw new IOException("Not a normal file: "
+					+ inpath.getCanonicalPath());
 		}
+
+		return result;
+
 	}
 
 	/**

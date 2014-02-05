@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
@@ -138,6 +139,50 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	}
 
 	/**
+	 * Reads a {@link BufferedReader} and returns the data contained therein as a
+	 * {@link List} of new objects.
+	 * 
+	 * @param reader The {@code BufferedReader} to be read.
+	 * @return A <code>List</code> of objects representing the parsed file
+	 *         lines.
+	 * @throws Exception If there is a parsing error.
+	 */
+	public List<T> read(final BufferedReader reader) throws Exception {
+		final List<T> result = new ArrayList<T>();
+		for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+			final T data = parser.parse(line);
+			result.add(data);
+		}		
+		return result;
+	}
+	
+	/**
+	 * Reads an {@link InputStream} and returns the data contained therein as a
+	 * {@link List} of new objects.
+	 * 
+	 * @param input The {@code InputStream} to be read.
+	 * @return A <code>List</code> of objects representing the parsed file
+	 *         lines.
+	 * @throws Exception If there is a parsing error.
+	 */
+	public List<T> read(final InputStream input) throws Exception {
+		return read(new InputStreamReader(input));
+	}
+	
+	/**
+	 * Reads an {@link InputStreamReader} and returns the data contained therein as a
+	 * {@link List} of new objects.
+	 * 
+	 * @param reader The {@code InputStreamReader} to be read.
+	 * @return A <code>List</code> of objects representing the parsed file
+	 *         lines.
+	 * @throws Exception If there is a parsing error.
+	 */
+	public List<T> read(final InputStreamReader reader) throws Exception {
+		return read(new BufferedReader(reader));
+	}
+	
+	/**
 	 * Reads a {@link File} and returns the data contained therein as a
 	 * {@link List} of new objects.
 	 * 
@@ -153,18 +198,13 @@ public class ListFileReader<T> extends FileReader<List<T>> {
 	 */
 	@Override
 	public List<T> readFile(final File infile) throws Exception {
-		final InputStreamReader isr = new InputStreamReader(
-				new FileInputStream(infile));
-		final BufferedReader br = new BufferedReader(isr);
+		List<T> result = null;
 
-		final List<T> contents = new ArrayList<T>();
-
-		for (String line = br.readLine(); line != null; line = br.readLine()) {
-			final T data = parser.parse(line);
-			contents.add(data);
+		try (final FileInputStream is = new FileInputStream(infile)){
+			result = read(is);
 		}
 
-		return contents;
+		return result;
 	}
 
 	/*

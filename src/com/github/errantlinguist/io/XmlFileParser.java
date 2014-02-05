@@ -78,9 +78,9 @@ public class XmlFileParser implements FileParser<Document> {
 	 * @return A <code>String</code> denoting an XML declaration, e.g.&nbsp;
 	 *         {@code <?xml version="1.0" encoding="utf-8"?>}.
 	 */
-	private static String makeXMLDeclaration(final double xmlVersion,
+	private static String createXMLDeclaration(final double xmlVersion,
 			final String encoding) {
-		final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder(64);
 		sb.append("<?xml version=\"");
 		sb.append(Double.toString(xmlVersion));
 		sb.append("\" encoding=\"");
@@ -134,7 +134,7 @@ public class XmlFileParser implements FileParser<Document> {
 
 		db = dbf.newDocumentBuilder();
 
-		xmlDeclaration = makeXMLDeclaration(xmlVersion, encoding);
+		xmlDeclaration = createXMLDeclaration(xmlVersion, encoding);
 
 		hashCode = calculateHashCode();
 	}
@@ -213,11 +213,7 @@ public class XmlFileParser implements FileParser<Document> {
 		return hashCode;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.uni_saarland.lsv.dlr.io.FileParser#parse(java.lang.String)
-	 */
+
 	@Override
 	public Document parse(final String line) throws SAXException, IOException {
 
