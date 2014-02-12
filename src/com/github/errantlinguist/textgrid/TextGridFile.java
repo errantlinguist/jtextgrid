@@ -1,271 +1,92 @@
 /*
-Licensed to the Apache Software Foundation (ASF) under one
-or more contributor license agreements.  See the NOTICE file
-distributed with this work for additional information
-regarding copyright ownership.  The ASF licenses this file
-to you under the Apache License, Version 2.0 (the
-"License"); you may not use this file except in compliance
-with the License.  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing,
-software distributed under the License is distributed on an
-"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-KIND, either express or implied.  See the License for the
-specific language governing permissions and limitations
-under the License.
+ * 	Copyright 2011--2014 Todd Shore
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
  */
-
 package com.github.errantlinguist.textgrid;
 
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.TreeSet;
+import java.util.Objects;
 
-import com.github.errantlinguist.textgrid.Tier.TierClass;
+import com.github.errantlinguist.time.DoubleDuration;
+import com.github.errantlinguist.time.Durative;
+import com.github.errantlinguist.tree.ChildList;
 
 /**
  * A representation of a <a href="http://www.fon.hum.uva.nl/praat/">Praat</a>
  * TextGrid file and the annotation data contained therein.
  * 
- * @param <T>
+ * @param <D>
  *            The type of the annotation data.
  * 
- * @author Todd Shore
- * @version 2012-01-16
  * @since 2011-04-15
+ * @version 2014-02-11
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
-public class TextGridFile<T> extends
-		TimeSeriesDataList<Tier<T>, TextGridFile<T>> {
+public class TextGridFile<D> implements Durative<Double>, Serializable {
 
 	/**
-	 * All {@link Entry} objects in all {@link Tier} objects representing the
-	 * TextGrid tiers.
+	 * The serial version UID for use in {@link Serializable serialization}.
 	 */
-	private final NavigableSet<Entry<T>> entries;
+	private static final long serialVersionUID = -7360292361743846299L;
 
-	private final Map<Tier<T>, String> tierNames;
+	/**
+	 * A list of the {@link NamedTier tiers} this TextGrid file contains.
+	 */
+	private final ChildList<TextGridFile<D>, NamedTier<D>> children;
 
-	private final Map<String, Tier<T>> tiersByName;
+	/**
+	 * The duration of the TextGrid file.
+	 */
+	private final DoubleDuration duration;
 
 	/**
 	 * 
-	 * @param startTime
-	 *            The start time of the file.
-	 * @param endTime
-	 *            The end time of the file.
+	 * @param duration
+	 *            The duration of the TextGrid file.
 	 */
-	public TextGridFile(final double startTime, final double endTime) {
-		super(startTime, endTime);
-
-		this.entries = new TreeSet<Entry<T>>();
-		this.tiersByName = new HashMap<String, Tier<T>>();
-		this.tierNames = new HashMap<Tier<T>, String>();
+	public TextGridFile(final DoubleDuration duration) {
+		this(duration, new ArrayList<NamedTier<D>>());
 	}
 
 	/**
 	 * 
-	 * @param startTime
-	 *            The start time of the file.
-	 * @param endTime
-	 *            The end time of the file.
-	 * @param size
+	 * @param duration
+	 *            The duration of the TextGrid file.
+	 * @param initialSize
 	 *            The size of the file measured by the number of tiers it has.
 	 */
-	public TextGridFile(final double startTime, final double endTime,
-			final int size) {
-		super(startTime, endTime);
-
-		this.entries = new TreeSet<Entry<T>>();
-		this.tiersByName = new HashMap<String, Tier<T>>(size);
-		this.tierNames = new HashMap<Tier<T>, String>(size);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.github.errantlinguist.textgrid.TimeSeriesDataList#add(int,
-	 * java.lang.Object)
-	 */
-	@Override
-	public void add(final int index, final Tier<T> tier) {
-		tier.setFile(this);
-		super.add(index, tier);
-	}
-
-	/**
-	 * Constructs and adds a new {@link Tier} object.
-	 * 
-	 * @param tierClass
-	 *            The class of the tier.
-	 * @param index
-	 *            The tier index.
-	 * @param name
-	 *            The tier name.
-	 * @param startTime
-	 *            The tier start time.
-	 * @param endTime
-	 *            The tier end time.
-	 * @return The newly-constructed and (successfully) -added <code>Tier</code>
-	 *         object.
-	 */
-	public final Tier<T> add(final int index, final TierClass tierClass,
-			final String name, final double startTime, final double endTime) {
-		final Tier<T> result = new Tier<T>(this, tierClass, startTime, endTime);
-		addNew(index, result);
-		putTierByName(name, result);
-		return result;
-
-	}
-
-	/**
-	 * Constructs and adds a new {@link Tier} object.
-	 * 
-	 * @param index
-	 *            The tier index.
-	 * @param tierClass
-	 *            The class of the tier.
-	 * @param name
-	 *            The tier name.
-	 * @param startTime
-	 *            The tier start time.
-	 * @param endTime
-	 *            The tier end time.
-	 * @param size
-	 *            The size of the tier measured by the number of {@link Entry}
-	 *            objects it has.
-	 * @return The newly-constructed and (successfully) -added <code>Tier</code>
-	 *         object.
-	 */
-	public final Tier<T> add(final int index, final TierClass tierClass,
-			final String name, final double startTime, final double endTime,
-			final int size) {
-		final Tier<T> result = new Tier<T>(this, tierClass, startTime,
-				endTime, size);
-		addNew(index, result);
-		putTierByName(name, result);
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.github.errantlinguist.textgrid.TimeSeriesDataList#add(java.lang.
-	 * Object)
-	 */
-	@Override
-	public boolean add(final Tier<T> tier) {
-		final int index = getNextFreeIndex();
-		add(index, tier);
-		setLastAutomaticallyAddedIndex(index);
-		return true;
-	}
-
-	/**
-	 * Constructs and adds a new {@link Tier} object.
-	 * 
-	 * @param tierClass
-	 *            The class of the tier.
-	 * @param name
-	 *            The tier name.
-	 * @param startTime
-	 *            The tier start time.
-	 * @param endTime
-	 *            The tier end time.
-	 * @return The newly-constructed and (successfully) -added <code>Tier</code>
-	 *         object.
-	 */
-	public final Tier<T> add(final TierClass tierClass, final String name,
-			final double startTime, final double endTime) {
-		final Tier<T> result = new Tier<T>(this, tierClass, startTime, endTime);
-		addNew(result);
-		putTierByName(name, result);
-		return result;
-	}
-
-	/**
-	 * Constructs and adds a new {@link Tier} object.
-	 * 
-	 * @param tierClass
-	 *            The class of the tier.
-	 * @param name
-	 *            The tier name.
-	 * @param startTime
-	 *            The tier start time.
-	 * @param endTime
-	 *            The tier end time.
-	 * @param size
-	 *            The size of the tier measured by the number of {@link Entry}
-	 *            objects it has.
-	 * @return The newly-constructed and (successfully) -added <code>Tier</code>
-	 *         object.
-	 */
-	public final Tier<T> add(final TierClass tierClass, final String name,
-			final double startTime, final double endTime, final int size) {
-		final Tier<T> result = new Tier<T>(this, tierClass, startTime,
-				endTime, size);
-		addNew(result);
-		putTierByName(name, result);
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.github.errantlinguist.textgrid.TimeSeriesDataList#addAll(java.util
-	 * .Collection)
-	 */
-	@Override
-	public boolean addAll(final Collection<? extends Tier<T>> tiers) {
-		boolean result = false;
-		
-		for (final Tier<T> tier : tiers) {
-			if (add(tier)) {
-				tier.setFile(this);
-				result = true;
-			}
-
-		}
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.github.errantlinguist.textgrid.TimeSeriesDataList#addAll(int,
-	 * java.util.Collection)
-	 */
-	@Override
-	public boolean addAll(int index, final Collection<? extends Tier<T>> tiers) {
-		if (getElements().size() == index) {
-			return addAll(tiers);
-		} else {
-			shiftRight(getElements(), index, getElements().size(), tiers.size());
-
-			for (final Tier<T> tier : tiers) {
-				add(index, tier);
-				tier.setFile(this);
-				// Increment the index for the next element to be added
-				index++;
-			}
-			return false;
-		}
+	public TextGridFile(final DoubleDuration duration, final int initialSize) {
+		this(duration, new ArrayList<NamedTier<D>>(initialSize));
 	}
 
 	/**
 	 * 
-	 * @return The amount of {@link Entry} objects associated with the
-	 *         <code>TextGridFile</code>.
+	 * @param duration
+	 *            The duration of the TextGrid file.
+	 * @param tiers
+	 *            A list of the {@link NamedTier tiers} this TextGrid file
+	 *            contains.
 	 */
-	public final int entryCount() {
-		return entries.size();
+	public TextGridFile(final DoubleDuration duration,
+			final List<NamedTier<D>> tiers) {
+		this.children = new ChildList<TextGridFile<D>, NamedTier<D>>(tiers,
+				this);
+		this.duration = duration;
+
 	}
 
 	/*
@@ -275,84 +96,36 @@ public class TextGridFile<T> extends
 	 */
 	@Override
 	public boolean equals(final Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof TextGridFile)) {
-			return false;
-		}
-		final TextGridFile<?> other = (TextGridFile<?>) obj;
-		if (entries == null) {
-			if (other.entries != null) {
-				return false;
-			}
-		} else if (!entries.equals(other.entries)) {
-			return false;
-		}
-		return true;
-	}
+		final boolean result;
 
-	/**
-	 * @return the entries
-	 */
-	public NavigableSet<Entry<T>> getEntries() {
-		return entries;
-	}
-
-	/**
-	 * Gets the string name of a given {@link Tier}.
-	 * 
-	 * @param tier
-	 *            The <code>Tier</code> to get the name of.
-	 * @return The name of the <code>Tier</code>.
-	 */
-	public String getName(final Tier<T> tier) {
-		final String name = tierNames.get(tier);
-		return name;
-	}
-
-	/**
-	 * Gets a {@link Tier} object by its name.
-	 * 
-	 * @param name
-	 *            name of the tier.
-	 * @return The <code>Tier</code> object associated with the given name.
-	 */
-	public final Tier<T> getTier(final String name) {
-		return tiersByName.get(name);
-	}
-
-	/**
-	 * 
-	 * @return An ordered {@link List} of {@link NavigableSet} objects of the
-	 *         {@link Entry} objects associated with each {@link Tier} object
-	 *         associated with the <code>TextGridFile</code>.
-	 */
-	public final List<NavigableSet<Entry<T>>> getTierEntryLists() {
-		final List<NavigableSet<Entry<T>>> newList = new ArrayList<NavigableSet<Entry<T>>>(
-				getElements().size());
-		for (final Tier<T> tier : getElements()) {
-			newList.add(tier.getElementIndices().navigableKeySet());
+		if (super.equals(obj)) {
+			result = true;
+		} else if (obj == null) {
+			result = false;
+		} else if (obj instanceof TextGridFile) {
+			final TextGridFile<?> other = (TextGridFile<?>) obj;
+			result = isEquivalentTo(other);
+		} else {
+			result = false;
 		}
 
-		return newList;
+		return result;
 	}
 
 	/**
-	 * @return the tierNames
+	 * @return A list of the {@link NamedTier tiers} this TextGrid file
+	 *         contains.
 	 */
-	public Map<Tier<T>, String> getTierNames() {
-		return tierNames;
+	public ChildList<TextGridFile<D>, NamedTier<D>> getChildren() {
+		return children;
 	}
 
 	/**
-	 * @return the tiersByName
+	 * @return The duration of the TextGrid file.
 	 */
-	public Map<String, Tier<T>> getTiersByName() {
-		return tiersByName;
+	@Override
+	public DoubleDuration getDuration() {
+		return duration;
 	}
 
 	/*
@@ -363,21 +136,10 @@ public class TextGridFile<T> extends
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + (entries == null ? 0 : entries.hashCode());
+		int result = 1;
+		result = (prime * result)
+				+ ((duration == null) ? 0 : duration.hashCode());
 		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.github.errantlinguist.textgrid.TimeSeriesDataList#set(int,
-	 * java.lang.Object)
-	 */
-	@Override
-	public Tier<T> set(final int index, final Tier<T> tier) {
-		tier.setFile(this);
-		return super.set(index, tier);
 	}
 
 	/*
@@ -387,180 +149,31 @@ public class TextGridFile<T> extends
 	 */
 	@Override
 	public String toString() {
-		final int estimatedStringLength = estimateStringLength();
-		final StringBuilder builder = new StringBuilder(estimatedStringLength);
-		builder.append(this.getClass().getSimpleName());
-		builder.append("[startTime=");
-		builder.append(startTime);
-		builder.append(", endTime=");
-		builder.append(endTime);
-		builder.append(", tiers=");
-		builder.append(getElements());
-		builder.append("]");
+		final String durationPrefix = "TextGridFile [getDuration()=";
+		final String durationStr = Objects.toString(getDuration());
+		final String childrenPrefix = ", getChildren()=";
+		final String childrenStr = Objects.toString(getChildren());
+		final StringBuilder builder = new StringBuilder(durationPrefix.length()
+				+ durationStr.length() + childrenPrefix.length()
+				+ childrenStr.length() + 1);
+		builder.append(durationPrefix);
+		builder.append(durationStr);
+		builder.append(childrenPrefix);
+		builder.append(childrenStr);
+		builder.append(']');
 		return builder.toString();
 	}
 
 	/**
-	 * Adds an {@link Tier} at a given index.
+	 * Checks if this object is equivalent to another one (ignoring identity).
 	 * 
-	 * @param index
-	 *            The index to add at.
-	 * @param tier
-	 *            The <code>Tier</code> to add.
+	 * @param other
+	 *            The other object to compare to.
+	 * @return <code>true</code> iff this object is equivalent to the other one.
 	 */
-	private void addNew(final int index, final Tier<T> tier) {
-		super.add(index, tier);
-
+	private boolean isEquivalentTo(final TextGridFile<?> other) {
+		return (Objects.equals(getDuration(), other.getDuration()) && Objects
+				.equals(getChildren(), other.getChildren()));
 	}
 
-	/**
-	 * Adds an {@link Tier} at a given index.
-	 * 
-	 * @param tier
-	 *            The <code>Tier</code> to add.
-	 */
-	private void addNew(final Tier<T> tier) {
-		super.add(tier);
-
-	}
-
-	/**
-	 * Estimates the length of the string representation of this object.
-	 * 
-	 * @return The estimated length of the string representation.
-	 */
-	private int estimateStringLength() {
-		int estimatedStringLength = estimateTierStringLength();
-		// Add some extra length for misc. padding
-		estimatedStringLength += 32;
-
-		return estimatedStringLength;
-	}
-
-	/**
-	 * Estimates the length of a string representation of the file {@link Entry
-	 * entries} on all {@link Tier tiers}.
-	 * 
-	 * @return The estimated length of the string representation of the child
-	 *         entries.
-	 */
-	private int estimateTierStringLength() {
-		return entries.size() * (Entry.ESTIMATED_STRING_LENGTH + 32);
-	}
-
-	/**
-	 * Puts a {@link Tier} into the string name mapping.
-	 * 
-	 * @param name
-	 *            The name of the <code>Tier</code> to put.
-	 * @return The <code>Tier</code> previously mapped to by the name.
-	 */
-	private Tier<T> putTierByName(final String name, final Tier<T> tier) {
-
-		tierNames.put(tier, name);
-		final Tier<T> oldTier = tiersByName.put(name, tier);
-		return oldTier;
-	}
-
-	/**
-	 * Adds the {@link Entry} objects in a given {@link Collection} thereof to
-	 * the set of all entries.
-	 * 
-	 * @param entries
-	 *            The <code>Collection</code> of <code>Entry</code> objects to
-	 *            add.
-	 * @return <code>true</code> iff the set of <code>Entry</code> objects was
-	 *         changed, i.e.&nbsp;if at least one <code>Entry</code> was added.
-	 */
-	protected final boolean addEntries(final Collection<Entry<T>> entries) {
-
-		boolean wasChanged = false;
-
-		for (final Entry<T> entry : entries) {
-			final boolean wasAdded = this.entries.add(entry);
-			if (wasAdded) {
-				wasChanged = true;
-			}
-
-		}
-
-		return wasChanged;
-	}
-
-	/**
-	 * Adds an {@link Entry} object to the set of all entries.
-	 * 
-	 * @param entry
-	 *            The <code>Entry</code> object to add.
-	 * @return <code>true</code> iff the <code>Entry</code> was successfully
-	 *         added.
-	 */
-	protected final boolean addEntry(final Entry<T> entry) {
-		return entries.add(entry);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see TimeSeriesData#deepCompareTo(TimeSeriesData)
-	 */
-	@Override
-	protected int deepCompareTo(final TextGridFile<T> arg0) {
-
-		int comp = 0;
-
-		if (entryCount() < arg0.entryCount()) {
-			comp = -1;
-		} else if (entryCount() > arg0.entryCount()) {
-			comp = 1;
-		} else {
-
-			if (size() < arg0.size()) {
-				comp = -1;
-			} else if (size() > arg0.size()) {
-				comp = 1;
-			}
-
-		}
-		return comp;
-	}
-
-	/**
-	 * Removes the {@link Entry} objects in a given {@link Collection} thereof
-	 * from the set of all entries.
-	 * 
-	 * @param entries
-	 *            The <code>Collection</code> of <code>Entry</code> objects to
-	 *            remove.
-	 * @return <code>true</code> iff the set of <code>Entry</code> objects was
-	 *         changed, i.e.&nbsp;if at least one <code>Entry</code> was
-	 *         removed.
-	 */
-	protected final boolean removeEntries(final Collection<Entry<T>> entries) {
-
-		boolean wasChanged = false;
-
-		for (final Entry<T> entry : entries) {
-			final boolean wasRemoved = this.entries.remove(entry);
-			if (wasRemoved) {
-				wasChanged = true;
-			}
-
-		}
-
-		return wasChanged;
-	}
-
-	/**
-	 * Removes an {@link Entry} object from the set of all entries.
-	 * 
-	 * @param entry
-	 *            The <code>Entry</code> object to remove.
-	 * @return <code>true</code> iff the <code>Entry</code> was in the set of
-	 *         <code>Entry</code> objects and was successfully removed.
-	 */
-	protected final boolean removeEntry(final Entry<T> entry) {
-		return entries.remove(entry);
-	}
 }
