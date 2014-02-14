@@ -23,95 +23,113 @@ WEBSITE: https://github.com/errantlinguist/jtextgrid
 LICENSING:
 Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See the files "NOTICE" and "LICENSE".
 -->
-<project basedir="." default="javadoc.main" name="JTextGrid Javadoc">
+<project basedir="." default="default" name="JTextGrid Javadoc">
 	
-
-
-	<target name="compile.main" depends="init.dist.main,main.build.dir,classpath.main" description="compile the source code" >
-		<echo message="dist.classpath = ${toString:dist.classpath}" />
-		<echo message="dist.build.dir = ${dist.build.dir}" />
-		<echo message="dist.source.dir = ${dist.source.dir}" />
-		<!-- Compile the java code from ${src} into ${build} -->
-		<javac
-			classpathref="dist.classpath"
+	<target name="classpath" depends="init" description="Create a default classpath for the Java VM/compiler.">
+		<!-- Set the variable "env.CLASSPATH" to blank if it's not yet been set in order to avoid bad path resolutions being included -->
+		<property name="env.CLASSPATH" location="" />
+		<path id="classpath">
+			<pathelement path="${env.CLASSPATH}" />
+			<fileset file="${guava.jar}" />
+		</path>
+	</target>
+	
+	<target name="classpath-main" depends="classpath,init-dist-main" description="Create a classpath for creating main (i.e. not test or demo) distributions.">
+		<path id="main.classpath">
+			<path refid="classpath" />
+			<pathelement path="${main.build.dir}" />
+		</path>
+	</target>
+	
+	<target name="clean" depends="clean-dist,clean-javadocs" description="Delete all generated files and directories." />
+	
+	<target name="clean-dist" depends="clean-dist-main" description="Delete all compiled files.">
+		<delete dir="${build.dir}" />
+	</target>
+	
+	<target name="clean-dist-main" depends="init-dist-main" description="Delete files compiled for main (i.e. not test or demo) distributions.">
+		<delete dir="${main.build.dir}" />
+	</target>
+	
+  	<target name="clean-javadocs" depends="init-javadocs" description="Delete Javadoc files.">
+		<delete dir="${javadoc.dir}" />
+	</target>
+	
+	<target name="compile-main" depends="classpath-main,main-build-dir" description="Compile the source code for main (i.e. not test or demo) distributions." >
+		<echo message="main.classpath = ${toString:main.classpath}" />
+		<echo message="main.build.dir = ${toString:main.build.dir}" />
+		<echo message="main.source.dir = ${toString:main.source.dir}" />
+		<javac classpathref="main.classpath"
 			debug="false"
-			destdir="${dist.build.dir}"
+			destdir="${main.build.dir}"
 			includeantruntime="false"
 			optimize="${javac.optimize}"
-			source="${sourceVersion}"
-			srcdir="${dist.source.dir}"
-			target="${targetVersion}"
+			source="${source.version}"
+			sourcepathref="main.source.dir"
+			srcdir="${main.source.dir}"
+			target="${target.version}"
 		/>
-	</target>	
+	</target>
 	
-	<target name="javadoc.main" depends="init.javadoc,classpath.main" description="Creates a Javadoc for the source code">
-		<echo message="${ant.project.name}: ${ant.file}"/>
-		<javadoc
-			access="${javadoc.access}"
+	<target name="default" depends="compile-main" description="Run the default project task." />
+	
+	<target name="external-libs" description="Define the set of external libraries to necessary to include">
+		<property file="external-libs.properties" />
+		<fileset id="external-libs" file="${guava.jar}" />
+	</target>
+ 
+	<target name="init" description="Set up the initial environment." >
+		<property environment="env" />
+		<property file="default.properties" />
+		<path id="build.dir">
+			<pathelement path="${build.dir}" />
+		</path>
+		<path id="source.dir">
+			<pathelement path="${source.dir}" />
+		</path>
+	</target>
+	
+	<target name="init-javadocs" depends="init" description="Set up the initial environment for creating Javadocs.">
+		<property file="javadoc.properties" />
+	</target>
+	
+	<target name="init-dist-main" depends ="init" description="Set up the initial environment for creating main (i.e. not test or demo) distributions.">
+		<property name="dist.name" value="main" />
+		<property name="main.build.dir" location="${build.dir}/${dist.name}/" />
+			<path id="main.build.dir">
+				<pathelement path="${main.build.dir}" />
+			</path>
+		<property name="main.source.dir" location="${source.dir}/${dist.name}/java/" />
+		<path id="main.source.dir">
+			<pathelement path="${main.source.dir}" />
+		</path>
+	</target>
+	
+	<target name="javadocs-main" depends="init-javadocs,classpath-main" description="Create a Javadoc for the project source code.">
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javadoc access="${javadoc.access}"
 			author="${javadoc.author}" 
 			destdir="${javadoc.dir}" 
-			classpathref="dist.classpath"
+			classpathref="main.classpath"
 			nodeprecated="${javadoc.nodeprecated}" 
 			nodeprecatedlist="${javadoc.nodeprecatedlist}" 
 			noindex="${javadoc.noindex}" 
 			nonavbar="${javadoc.nonavbar}" 
 			notree="${javadoc.notree}" 
 			packagenames="${javadoc.packagenames}" 
-			source="${sourceVersion}" 
-			sourcepath="${dist.source.dir}" 
+			source="${source.version}" 
+			sourcepathref="main.source.dir" 
 			splitindex="${javadoc.splitindex}" 
 			use="${javadoc.use}" 
 			version="${javadoc.version}"
 		>
-			<link href="${javadoc.javaurl}"/>
-			<link href="http://docs.guava-libraries.googlecode.com/git/javadoc/"/>
+			<link href="${javadoc.stdlib.url}" />
+			<link href="${guava.javadoc.url}" />
 		</javadoc>
 	</target>
-
-	<target name="classpath" depends="init" description="Creates a default classpath for the Java VM/compiler">
-		<!-- <echo message="externaljars: ${externaljars}"/> --> 
-		<!-- Set the variable "env.CLASSPATH" to blank if it's not yet been set -->
-		<property name="env.CLASSPATH" location="" />
-		<path id="classpath">
-			<pathelement path="${env.CLASSPATH}"/>
-		</path>
-	</target>	
 	
-	<target name="main.build.dir" depends="init.dist.main" description="Creates a build directory in which main (i.e. not test or demo) distributions are to be built.">
-		<mkdir dir="${dist.build.dir}" />
+	<target name="main-build-dir" depends="init-dist-main" description="Create a build directory in which main (i.e. not test or demo) distributions are to be built.">
+		<mkdir dir="${main.build.dir}" />
 	</target>
-	
-	<target name="classpath.main" depends="classpath,init.dist.main" description="Creates a classpath for creating main (i.e. not test or demo) distributions">
-		<!-- <echo message="externaljars: ${externaljars}"/> -->
-		<path id="dist.classpath">
-			<path refid="classpath"/>
-			<pathelement path="${dist.build.dir}"/>
-		</path>
-	</target>		
- 
-	<target name="init" description="Sets up the initial environment" >
-		<property environment="env" />
-		<property file="default.properties"/>	
-	</target>
-	
-	<target name="init.javadoc" depends="init" description="Sets up the initial environment for creating a Javadoc">
-		<property file="javadoc.properties"/>
-	</target>
-	
-	<target name="init.dist.main" depends ="init" description="Sets up the initial environment for creating main (i.e. not test or demo) distributions">
-		<property name="dist.name" value="main" />
-		<property name="dist.build.dir" location="${build.dir}/${dist.name}/" /> 
-		<property name="dist.source.dir" location="${source.dir}/${dist.name}/java/" />
-	</target>
-    
-   	<target name="clean.javadoc" depends="init.javadoc" description="Removes Javadoc files">
-		<delete dir="${javadoc.dir}"/>
-	</target>
-	
-	<target name="clean" depends="clean.javadoc" description="Removes made files" />
-	
-	<target name="cleanall" depends="clean" description="Removes class, JAR and Javadoc files" />
-	
-
 
 </project>
