@@ -1,0 +1,36 @@
+File type = "ooTextFile"
+Object class = "TextGrid"
+
+xmin = 0 
+xmax = 390.297 
+tiers? <exists> 
+size = 1 
+item []: 
+    item [1]:
+        class = "IntervalTier" 
+        name = "First tier" 
+        xmin = 0 
+        xmax = 390.297 
+        intervals: size = 4 
+        intervals [1]:
+            xmin = 0 
+            xmax = 5.473083722618337 
+            text = "I am an annotated interval." 
+        intervals [2]:
+            xmin = 5.473083722618337 
+            xmax = 8.67130881715898 
+            text = "" 
+        intervals [3]:
+            xmin = 8.67130881715898 
+            xmax = 13.495750061466053 
+            text = "I am another annotated interval." 
+    item [2]:
+        class = "TextTier" 
+        name = "Second tier" 
+        xmin = 0 
+        xmax = 390.297 
+        intervals: size = 1 
+        intervals [1]:
+            xmin = 22.54835329516584
+            xmax = 22.54835329516584 
+            text = "I am an annotated point." 

@@ -15,6 +15,7 @@
  */
 package com.github.errantlinguist.textgrid.io;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -50,13 +51,23 @@ public class PrintingTextGridFileReader<D> extends
 	 */
 	public static void main(final String[] args) throws IOException,
 			ParseException {
-		if (args.length < 1) {
+		if (args.length != 1) {
 			printUsage();
 			System.exit(64);
 		} else {
 			final String inpath = args[0];
 			final PrintStream out = System.out;
+			try {
 			process(inpath, out, out);
+			} catch (final FileNotFoundException e) {
+				final String message = e.getMessage();
+				System.err.println(message);
+				System.exit(66);
+			} catch (final IOException e) {
+				final String message = e.getMessage();
+				System.err.println(message);
+				System.exit(74);
+			}
 		}
 
 	}

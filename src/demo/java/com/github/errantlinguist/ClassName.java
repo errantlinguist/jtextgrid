@@ -33,7 +33,7 @@ public final class ClassName {
 	 * executed in the given runtime instance, first checking for the existence
 	 * of a property which starts with {@link #JAVA_MAIN_CLASS_PROPERTY_NAME},
 	 * and, if such a property does not exist, all current threads are searched
-	 * for one named {@link #MAIN_THREAD_NAME}.
+	 * for one named {@link StackTrace#MAIN_THREAD_NAME}.
 	 * 
 	 * @return The name of the class which contains the main method executed in
 	 *         the given runtime instance, or {@code null} if the main method

@@ -20,10 +20,9 @@ import java.io.Serializable;
 /**
  * An exception representing an error while parsing input.
  * 
- * @author Todd Shore
+ * @author Todd Shore <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * @since 2014-02-06
  * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public class ParseException extends Exception {

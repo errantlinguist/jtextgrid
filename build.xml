@@ -16,69 +16,123 @@
  specific language governing permissions and limitations
  under the License. -->
  
-<!-- Ant buildfile for JTextGrid
+<!-- Ant buildfile for jtextgrid
 AUTHOR: Todd Shore
 VERSION: 2014-02-13
 WEBSITE: https://github.com/errantlinguist/jtextgrid
 LICENSING:
 Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See the files "NOTICE" and "LICENSE".
 -->
-<project basedir="." default="default" name="JTextGrid Javadoc">
+<project basedir="." default="default" name="jtextgrid">
 	
-	<target name="classpath" depends="init" description="Create a default classpath for the Java VM/compiler.">
+	<target name="classpath" depends="init-dist,external-libs">
+		<!-- Create a default classpath for the Java VM/compiler. -->
 		<!-- Set the variable "env.CLASSPATH" to blank if it's not yet been set in order to avoid bad path resolutions being included -->
 		<property name="env.CLASSPATH" location="" />
 		<path id="classpath">
-			<pathelement path="${env.CLASSPATH}" />
-			<fileset file="${guava.jar}" />
+			<fileset dir="${env.CLASSPATH}">
+				<include name="${guava.jar}" />
+			</fileset> 
 		</path>
 	</target>
 	
-	<target name="classpath-main" depends="classpath,init-dist-main" description="Create a classpath for creating main (i.e. not test or demo) distributions.">
+	<target name="classpath-demo" depends="classpath-main,init-dist-demo">
+		<!-- Create a classpath for creating demo distributions. -->
+		<path id="demo.classpath">
+			<path refid="main.classpath" />
+			<pathelement path="${demo.build.dir}" />
+		</path>
+	</target>	
+	
+	<target name="classpath-main" depends="classpath,init-dist-main">
+		<!-- Create a classpath for creating main (i.e. not demo or test) distributions. -->
 		<path id="main.classpath">
 			<path refid="classpath" />
 			<pathelement path="${main.build.dir}" />
 		</path>
-	</target>
+	</target>	
 	
-	<target name="clean" depends="clean-dist,clean-javadocs" description="Delete all generated files and directories." />
+	<target name="clean" depends="clean-dist,clean-jar,clean-javadocs" description="Delete all generated files and directories." />
 	
-	<target name="clean-dist" depends="clean-dist-main" description="Delete all compiled files.">
+	<target name="clean-dist" depends="clean-dist-demo,clean-dist-main" description="Delete all compiled files.">
 		<delete dir="${build.dir}" />
 	</target>
+
+	<target name="clean-dist-demo" depends="clean-dist-main,init-dist-demo" description="Delete files compiled for demo distributions.">
+		<delete dir="${demo.build.dir}" />
+	</target>
 	
-	<target name="clean-dist-main" depends="init-dist-main" description="Delete files compiled for main (i.e. not test or demo) distributions.">
+	<target name="clean-dist-main" depends="init-dist-main" description="Delete files compiled for main (i.e. not demo or test) distributions.">
 		<delete dir="${main.build.dir}" />
+	</target>
+	
+	<target name="clean-jar" depends="init-jar" description="Delete all project JAR files.">
+		<delete dir="${jar.dir}" />
 	</target>
 	
   	<target name="clean-javadocs" depends="init-javadocs" description="Delete Javadoc files.">
 		<delete dir="${javadoc.dir}" />
 	</target>
-	
-	<target name="compile-main" depends="classpath-main,main-build-dir" description="Compile the source code for main (i.e. not test or demo) distributions." >
-		<echo message="main.classpath = ${toString:main.classpath}" />
-		<echo message="main.build.dir = ${toString:main.build.dir}" />
-		<echo message="main.source.dir = ${toString:main.source.dir}" />
-		<javac classpathref="main.classpath"
-			debug="false"
-			destdir="${main.build.dir}"
-			includeantruntime="false"
-			optimize="${javac.optimize}"
-			source="${source.version}"
-			sourcepathref="main.source.dir"
-			srcdir="${main.source.dir}"
-			target="${target.version}"
-		/>
+
+	<target name="compile-demo" depends="compile-main,classpath-demo,demo-build-dir" description="Compile the source code for demo distributions." >
+		<antcall target="javac-compile" inheritRefs="true">
+			 <param name="javac.classpathref" value="demo.classpath" />
+			 <param name="javac.source.dir" value="${demo.java.source.dir}" />
+			 <param name="javac.build.dir" value="${demo.build.dir}" />
+			 <param name="javac.debug" value="false" />
+		</antcall>
 	</target>
 	
-	<target name="default" depends="compile-main" description="Run the default project task." />
+	<target name="compile-main" depends="classpath-main,main-build-dir" description="Compile the source code for main (i.e. not demo or test) distributions." >
+		<antcall target="javac-compile" inheritRefs="true">
+			 <param name="javac.classpathref" value="main.classpath" />
+			 <param name="javac.source.dir" value="${main.java.source.dir}" />
+			 <param name="javac.build.dir" value="${main.build.dir}" />
+			 <param name="javac.debug" value="false" />
+		</antcall>
+	</target>
 	
-	<target name="external-libs" description="Define the set of external libraries to necessary to include">
+	<target name="copy-classpath-libs" depends="classpath">
+		<copy todir="${lib.dir}" flatten="true">
+			<path refid="classpath">
+			</path>
+		</copy>	
+	</target>
+	
+	<target name="default" depends="demo" description="Run the default project task." />
+	
+	<target name="demo" depends="compile-demo,init-demo" description="Run a demonstration of usage of the jtextgrid library.">
+		<java classname="${demo.mainclass}" failonerror="true" fork="yes" classpathref="demo.classpath">
+			<arg line="${demo.args}"/>
+		</java>
+	</target>
+	
+	<target name="demo-aggregate-source-dir" depends="init-dist-demo,init-dist-main">
+		<!-- Creates a path to all source code required for demo distributions (not just the demo-specific source code itself). -->
+		<path id="demo.aggregate.java.source.dir">
+			<path refid="demo.java.source.path" />
+			<path refid="main.java.source.path" />
+		</path>
+	</target>		
+	
+	<target name="demo-build-dir" depends="init-dist-demo">
+		<!-- Create a build directory in which demo distributions are to be built. -->
+		<mkdir dir="${demo.build.dir}" />
+	</target>
+	
+	<target name="external-libs">
+		<!-- Define the set of external libraries to necessary to include. -->
 		<property file="external-libs.properties" />
-		<fileset id="external-libs" file="${guava.jar}" />
+	</target>
+	
+	<target name="init-demo" depends="init-dist-demo">
+		<!-- Set up the initial environment for running a demonstration of usage of the jtextgrid library. -->
+		<property file="demo.properties" />
 	</target>
  
-	<target name="init" description="Set up the initial environment." >
+	<target name="init-dist">
+		<!-- Set up the initial environment. -->
+		<echo message="${ant.project.name}: ${ant.file}" />
 		<property environment="env" />
 		<property file="default.properties" />
 		<path id="build.dir">
@@ -88,29 +142,135 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 			<pathelement path="${source.dir}" />
 		</path>
 	</target>
+
+	<target name="init-dist-demo" depends="init-dist">
+		<!-- Set up the initial environment for creating demo distributions. -->
+		<local name="dist.name" />
+		<property name="dist.name" value="demo" />
+		<property name="demo.build.dir" location="${build.dir}/${dist.name}" />
+			<path id="demo.build.dir">
+				<pathelement path="${demo.build.dir}" />
+			</path>
+		<property name="demo.source.dir" location="${source.dir}/${dist.name}" />
+		<property name="demo.java.source.dir" location="${demo.source.dir}/java" />
+		<path id="demo.java.source.path">
+			<pathelement path="${demo.java.source.dir}" />
+		</path>
+		<property name="demo.resource.dir" location="${demo.source.dir}/${resource.dirname}" />
+	</target>
 	
-	<target name="init-javadocs" depends="init" description="Set up the initial environment for creating Javadocs.">
+	<target name="init-dist-main" depends="init-dist">
+		<!-- Set up the initial environment for creating main (i.e. not demo or test) distributions. -->
+		<local name="dist.name" />
+		<property name="dist.name" value="main" />
+		<property name="main.build.dir" location="${build.dir}/${dist.name}" />
+		<property name="main.source.dir" location="${source.dir}/${dist.name}" />
+		<property name="main.java.source.dir" location="${main.source.dir}/java" />
+		<path id="main.java.source.path">
+			<pathelement path="${main.java.source.dir}" />
+		</path>
+	</target>
+
+	<target name="init-jar" depends="init-dist">
+		<!-- Sets up the initial environment for creating JARs. -->
+		<property file="jar.properties"/>
+	</target>
+	
+	<target name="init-javadocs">
+		<!-- Set up the initial environment for creating Javadocs. -->
 		<property file="javadoc.properties" />
 	</target>
 	
-	<target name="init-dist-main" depends ="init" description="Set up the initial environment for creating main (i.e. not test or demo) distributions.">
-		<property name="dist.name" value="main" />
-		<property name="main.build.dir" location="${build.dir}/${dist.name}/" />
-			<path id="main.build.dir">
-				<pathelement path="${main.build.dir}" />
-			</path>
-		<property name="main.source.dir" location="${source.dir}/${dist.name}/java/" />
-		<path id="main.source.dir">
-			<pathelement path="${main.source.dir}" />
-		</path>
+	<target name="jar" depends="jar-main" description="Create a JAR of the code." />
+
+	<target name="jar-demo" depends="compile-demo,init-demo,jar-dir,jar-manifest-classpath-demo" description="Create a JAR of the demo distribution.">
+		<local name="dist.name" />
+		<property name="dist.name" value="demo" />
+		<local name="jar.filename" />
+		<property name="jar.filename" value="${build.name}-${dist.name}.jar" />
+
+		<jar destfile="${jar.dir}/${jar.filename}" compress="true">
+			<fileset dir="${demo.build.dir}"/>
+			<fileset dir="${demo.source.dir}">
+			<include name="${resource.dirname}/*" />
+			</fileset>
+			<fileset dir="${main.build.dir}"/>
+			<!-- define MANIFEST.MF -->
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<attribute name="Main-Class" value="${demo.mainclass}" />
+				<attribute name="Class-Path" value="${jar.manifest.classpath}" />
+				<section name="common">
+					<attribute name="Specification-Title" value="${jar.manifest.specification.title}" />
+					<attribute name="Specification-Version" value="${jar.manifest.specification.version}" />
+					<attribute name="Specification-Vendor" value="${jar.manifest.specification.vendor}" />
+					<attribute name="Implementation-Title" value="${jar.manifest.implementation.title}" />
+					<attribute name="Implementation-Version" value="${jar.manifest.implementation.version}" />
+					<attribute name="Implementation-Vendor" value="${jar.manifest.implementation.vendor}" />
+				</section>
+			</manifest>
+		</jar>	
 	</target>
 	
-	<target name="javadocs-main" depends="init-javadocs,classpath-main" description="Create a Javadoc for the project source code.">
-		<echo message="${ant.project.name}: ${ant.file}" />
+	<target name="jar-main" depends="compile-main,jar-dir" description="Create a JAR of the main (i.e. not demo or test) distribution.">
+		<local name="jar.filename" />
+		<property name="jar.filename" value="${build.name}.jar" />
+
+		<jar destfile="${jar.dir}/${jar.filename}" compress="true">
+			<fileset dir="${main.build.dir}"/>
+			<!-- define MANIFEST.MF -->
+			<manifest>
+				<attribute name="Built-By" value="${user.name}" />
+				<section name="common">
+					<attribute name="Specification-Title" value="${jar.manifest.specification.title}" />
+					<attribute name="Specification-Version" value="${jar.manifest.specification.version}" />
+					<attribute name="Specification-Vendor" value="${jar.manifest.specification.vendor}" />
+					<attribute name="Implementation-Title" value="${jar.manifest.implementation.title}" />
+					<attribute name="Implementation-Version" value="${jar.manifest.implementation.version}" />
+					<attribute name="Implementation-Vendor" value="${jar.manifest.implementation.vendor}" />
+				</section>
+			</manifest>
+		</jar>	
+	</target>
+	
+	<target name="jar-dir" depends="init-jar">
+		<!-- Create a build directory in which JARs are to be built. -->
+		<mkdir dir="${jar.dir}"/>
+	</target>
+	
+	<target name="jar-manifest-classpath-demo" depends="classpath-main,lib-dir">
+		<local name="dist.name" />
+		<property name="dist.name" value="demo" />
+		<local name="jar.filename" />
+		<property name="jar.filename" value="${build.name}-${dist.name}.jar" />
+		<manifestclasspath property="jar.manifest.classpath" jarfile="${jar.dir}/${jar.filename}">
+			<classpath refid="lib.path" />
+		</manifestclasspath>
+	</target>
+	
+	<target name="javac-compile" >
+		<!-- Compile the source code. -->
+		<echo message="javac.classpathref = ${javac.classpathref}" />
+		<echo message="javac.source.dir = ${javac.source.dir}" />
+		<echo message="javac.build.dir = ${javac.build.dir}" />
+		<javac classpathref="${javac.classpathref}"
+			debug="${javac.debug}"
+			debuglevel="${javac.debuglevel}"
+			destdir="${javac.build.dir}"
+			includeantruntime="false"
+			optimize="${javac.optimize}"
+			source="${source.version}"
+			srcdir="${javac.source.dir}"
+			target="${target.version}"
+		/>
+	</target>
+	
+	<target name="javadocs-create">
+		<!-- Create a Javadoc for the source code. -->
 		<javadoc access="${javadoc.access}"
 			author="${javadoc.author}" 
 			destdir="${javadoc.dir}" 
-			classpathref="main.classpath"
+			classpathref="${javadoc.classpathref}"
 			nodeprecated="${javadoc.nodeprecated}" 
 			nodeprecatedlist="${javadoc.nodeprecatedlist}" 
 			noindex="${javadoc.noindex}" 
@@ -118,17 +278,42 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 			notree="${javadoc.notree}" 
 			packagenames="${javadoc.packagenames}" 
 			source="${source.version}" 
-			sourcepathref="main.source.dir" 
+			sourcepathref="${javadoc.source.dirref}" 
 			splitindex="${javadoc.splitindex}" 
 			use="${javadoc.use}" 
 			version="${javadoc.version}"
 		>
 			<link href="${javadoc.stdlib.url}" />
 			<link href="${guava.javadoc.url}" />
-		</javadoc>
+		</javadoc>		
 	</target>
 	
-	<target name="main-build-dir" depends="init-dist-main" description="Create a build directory in which main (i.e. not test or demo) distributions are to be built.">
+	<target name="javadocs" depends="javadocs-main" description="Create a Javadoc for the source code." />
+
+	<target name="javadocs-demo" depends="init-javadocs,classpath-demo,demo-aggregate-source-dir" description="Create a Javadoc for the demo source code.">
+		<antcall target="javadocs-create" inheritRefs="true">
+			 <param name="javadoc.classpathref" value="demo.classpath" />
+			 <param name="javadoc.source.dirref" value="demo.aggregate.java.source.dir" />
+		</antcall>
+	</target>
+	
+	<target name="javadocs-main" depends="init-javadocs,classpath-main" description="Create a Javadoc for the main (i.e. not demo or test) source code.">
+		<antcall target="javadocs-create" inheritRefs="true">
+			 <param name="javadoc.classpathref" value="main.classpath" />
+			 <param name="javadoc.source.dirref" value="main.java.source.path" />
+		</antcall>
+	</target>
+	
+	<target name="lib-dir" depends="copy-classpath-libs">
+		<path id="lib.path">
+			<fileset dir="${lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</path>
+	</target>
+	
+	<target name="main-build-dir" depends="init-dist-main">
+		<!-- Create a build directory in which main (i.e. not demo or test) distributions are to be built. -->
 		<mkdir dir="${main.build.dir}" />
 	</target>
 

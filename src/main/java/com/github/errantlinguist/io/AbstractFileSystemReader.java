@@ -291,14 +291,10 @@ public abstract class AbstractFileSystemReader<O, E extends Throwable>
 		beforeReadingPath(inpath);
 		if (inpath.isDirectory()) {
 			result = readDirectory(inpath);
-		} else if (inpath.isFile()) {
+		} else {
 			result = new HashMap<File, O>();
 			final O fileContents = readFile(inpath);
 			result.put(inpath, fileContents);
-
-		} else {
-			throw new IOException("Not a normal file: "
-					+ inpath.getCanonicalPath());
 		}
 		afterReadingPath(result);
 		return result;
@@ -326,19 +322,16 @@ public abstract class AbstractFileSystemReader<O, E extends Throwable>
 	public final Map<File, O> readPath(final File inpath,
 			final FilenameFilter filenameFilter) throws IOException, E {
 		final Map<File, O> result;
-
+		beforeReadingPath(inpath);
 		if (inpath.isDirectory()) {
 			result = readDirectory(inpath, filenameFilter);
-		} else if (inpath.isFile()) {
+		} else {
 			result = new HashMap<File, O>();
 			final O fileContents = readFile(inpath);
 			result.put(inpath, fileContents);
 
-		} else {
-			throw new IOException("Not a normal file: "
-					+ inpath.getCanonicalPath());
 		}
-
+		afterReadingPath(result);
 		return result;
 
 	}
