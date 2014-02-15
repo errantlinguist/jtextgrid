@@ -93,6 +93,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 	</target>
 	
 	<target name="copy-classpath-libs" depends="classpath">
+		<!-- Copy all JAR files on the classpath to the project's local "lib" folder -->
 		<copy todir="${lib.dir}" flatten="true">
 			<path refid="classpath">
 			</path>
