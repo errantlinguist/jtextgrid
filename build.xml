@@ -25,14 +25,21 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 -->
 <project basedir="." default="default" name="jtextgrid">
 	
-	<target name="classpath" depends="init-dist,external-libs">
-		<!-- Create a default classpath for the Java VM/compiler. -->
+	<target name="classpath-system" depends="init-dist,external-libs">
+		<!-- Create a classpath for the Java VM/compiler defined by system environment variables. -->
 		<!-- Set the variable "env.CLASSPATH" to blank if it's not yet been set in order to avoid bad path resolutions being included -->
 		<property name="env.CLASSPATH" location="" />
-		<path id="classpath">
+		<path id="system.classpath">
 			<fileset dir="${env.CLASSPATH}">
 				<include name="${guava.jar}" />
 			</fileset> 
+		</path>
+	</target>	
+
+	<target name="classpath" depends="init-dist,lib-dir">
+		<!-- Create a default classpath for the Java VM/compiler. -->
+		<path id="classpath">
+			<path refid="lib.path" />
 		</path>
 	</target>
 	
@@ -92,15 +99,15 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		</antcall>
 	</target>
 	
-	<target name="copy-classpath-libs" depends="classpath">
+	<!-- <target name="copy-classpath-libs" depends="classpath"> -->
 		<!-- Copy all JAR files on the classpath to the project's local "lib" folder -->
-		<copy todir="${lib.dir}" flatten="true">
+		<!-- <copy todir="${lib.dir}" flatten="true">
 			<path refid="classpath">
 			</path>
 		</copy>	
-	</target>
+	</target> -->
 	
-	<target name="default" depends="demo" description="Run the default project task." />
+	<target name="default" depends="jar" description="Run the default project task." />
 	
 	<target name="demo" depends="compile-demo,init-demo" description="Run a demonstration of usage of the jtextgrid library.">
 		<java classname="${demo.mainclass}" failonerror="true" fork="yes" classpathref="demo.classpath">
@@ -171,7 +178,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 			<pathelement path="${main.java.source.dir}" />
 		</path>
 	</target>
-
+	
 	<target name="init-jar" depends="init-dist">
 		<!-- Sets up the initial environment for creating JARs. -->
 		<property file="jar.properties"/>
@@ -182,9 +189,16 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		<property file="javadoc.properties" />
 	</target>
 	
+	<!-- <target name="init-os"> -->
+		<!-- Set up the initial environment for system-specific settings. -->
+	<!-- 	<condition property="unix">
+			<os family="unix" />
+		</condition>
+	</target> -->
+	
 	<target name="jar" depends="jar-main" description="Create a JAR of the code." />
 
-	<target name="jar-demo" depends="compile-demo,init-demo,jar-dir,jar-manifest-classpath-demo" description="Create a JAR of the demo distribution.">
+	<!-- <target name="jar-demo" depends="compile-demo,init-demo,jar-dir,jar-manifest-classpath-demo" description="Create a JAR of the demo distribution.">
 		<local name="dist.name" />
 		<property name="dist.name" value="demo" />
 		<local name="jar.filename" />
@@ -192,12 +206,13 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 
 		<jar destfile="${jar.dir}/${jar.filename}" compress="true">
 			<fileset dir="${demo.build.dir}"/>
+
 			<fileset dir="${demo.source.dir}">
 			<include name="${resource.dirname}/*" />
 			</fileset>
-			<fileset dir="${main.build.dir}"/>
+			<fileset dir="${main.build.dir}"/> -->
 			<!-- define MANIFEST.MF -->
-			<manifest>
+			<!-- <manifest>
 				<attribute name="Built-By" value="${user.name}" />
 				<attribute name="Main-Class" value="${demo.mainclass}" />
 				<attribute name="Class-Path" value="${jar.manifest.classpath}" />
@@ -211,7 +226,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 				</section>
 			</manifest>
 		</jar>	
-	</target>
+	</target> -->
 	
 	<target name="jar-main" depends="compile-main,jar-dir" description="Create a JAR of the main (i.e. not demo or test) distribution.">
 		<local name="jar.filename" />
@@ -305,7 +320,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		</antcall>
 	</target>
 	
-	<target name="lib-dir" depends="copy-classpath-libs">
+	<target name="lib-dir" depends="init-dist">
 		<path id="lib.path">
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar"/>
