@@ -25,7 +25,9 @@ import com.github.errantlinguist.io.Printer;
 import com.github.errantlinguist.textgrid.TextGridFile;
 
 /**
- * @author tsh
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11
  * 
  */
 public class TextGridFileMapTabularPrintStreamPrinter<D> implements

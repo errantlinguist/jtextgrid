@@ -36,8 +36,14 @@ public final class ToStringPrintStreamPrinter implements Printer<Object>,
 	 */
 	private static final long serialVersionUID = 142466668617417879L;
 
+	/**
+	* The {@link PrintStream} to print to.
+	*/
 	private final PrintStream out;
 
+	/**
+	* @param out The {@link PrintStream} to print to.
+	*/
 	public ToStringPrintStreamPrinter(final PrintStream out) {
 		this.out = out;
 	}

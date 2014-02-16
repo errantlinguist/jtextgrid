@@ -25,7 +25,9 @@ import com.github.errantlinguist.time.Duration;
 import com.github.errantlinguist.time.io.DurationTabularPrintStreamPrinter;
 
 /**
- * @author tsh
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11
  * 
  * @param <D>
  *            The annotation data type.

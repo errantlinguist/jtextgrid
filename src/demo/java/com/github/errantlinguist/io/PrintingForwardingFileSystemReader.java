@@ -1,5 +1,17 @@
-/**
- * 
+/*
+ * 	Copyright 2014 Todd Shore
+ *
+ *	Licensed under the Apache License, Version 2.0 (the "License");
+ *	you may not use this file except in compliance with the License.
+ *	You may obtain a copy of the License at
+ *
+ *		http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *	Unless required by applicable law or agreed to in writing, software
+ *	distributed under the License is distributed on an "AS IS" BASIS,
+ *	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *	See the License for the specific language governing permissions and
+ *	limitations under the License.
  */
 package com.github.errantlinguist.io;
 
@@ -9,7 +21,11 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
- * @author tsh
+ * A {@link #ForwardingFileSystemReader} which prints a message to a given {@link #PrintStream} before and after each call.
+ *
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11
  * 
  */
 public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
@@ -39,17 +55,29 @@ public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
 		return result;
 	}
 
-	private Map<com.github.errantlinguist.io.AbstractFileSystemReader.Hook, String> hookMessageFormatStrs;
+	private Map<Hook, String> hookMessageFormatStrs;
 
+	/**
+	* A reference to the last-read (i.e. opened) {@link File} object.
+	*/
 	private File lastReadPath = null;
-
+	
+	/**
+	* The {@link PrintStream} to print to.
+	*/
 	private PrintStream out;
 
+	/**
+	* @param out The {@link PrintStream} to print to.
+	*/
 	public PrintingForwardingFileSystemReader(final PrintStream out,
 			final InputStreamReader<O, E> reader) {
 		this(out, reader, DEFAULT_HOOK_MESSAGE_FORMAT_STRS);
 	}
 
+	/**
+	* @param out The {@link PrintStream} to print to.
+	*/
 	public PrintingForwardingFileSystemReader(final PrintStream out,
 			final InputStreamReader<O, E> reader,
 			final Map<Hook, String> hookMessageFormatStrs) {
