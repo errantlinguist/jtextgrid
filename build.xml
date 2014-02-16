@@ -25,7 +25,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 -->
 <project basedir="." default="default" name="jtextgrid">
 	
-	<target name="classpath-system" depends="init-dist,external-libs">
+	<target name="classpath-system" depends="init,external-libs">
 		<!-- Create a classpath for the Java VM/compiler defined by system environment variables. -->
 		<!-- Set the variable "env.CLASSPATH" to blank if it's not yet been set in order to avoid bad path resolutions being included -->
 		<property name="env.CLASSPATH" location="" />
@@ -36,7 +36,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		</path>
 	</target>	
 
-	<target name="classpath" depends="init-dist,lib-dir">
+	<target name="classpath" depends="init,lib-dir">
 		<!-- Create a default classpath for the Java VM/compiler. -->
 		<path id="classpath">
 			<path refid="lib.path" />
@@ -138,7 +138,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		<property file="demo.properties" />
 	</target>
  
-	<target name="init-dist">
+	<target name="init">
 		<!-- Set up the initial environment. -->
 		<echo message="${ant.project.name}: ${ant.file}" />
 		<property environment="env" />
@@ -151,7 +151,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		</path>
 	</target>
 
-	<target name="init-dist-demo" depends="init-dist">
+	<target name="init-dist-demo" depends="init">
 		<!-- Set up the initial environment for creating demo distributions. -->
 		<local name="dist.name" />
 		<property name="dist.name" value="demo" />
@@ -167,7 +167,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		<property name="demo.resource.dir" location="${demo.source.dir}/${resource.dirname}" />
 	</target>
 	
-	<target name="init-dist-main" depends="init-dist">
+	<target name="init-dist-main" depends="init">
 		<!-- Set up the initial environment for creating main (i.e. not demo or test) distributions. -->
 		<local name="dist.name" />
 		<property name="dist.name" value="main" />
@@ -179,7 +179,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		</path>
 	</target>
 	
-	<target name="init-jar" depends="init-dist">
+	<target name="init-jar" depends="init">
 		<!-- Sets up the initial environment for creating JARs. -->
 		<property file="jar.properties"/>
 	</target>
@@ -266,9 +266,6 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 	
 	<target name="javac-compile" >
 		<!-- Compile the source code. -->
-		<echo message="javac.classpathref = ${javac.classpathref}" />
-		<echo message="javac.source.dir = ${javac.source.dir}" />
-		<echo message="javac.build.dir = ${javac.build.dir}" />
 		<javac classpathref="${javac.classpathref}"
 			debug="${javac.debug}"
 			debuglevel="${javac.debuglevel}"
@@ -320,7 +317,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		</antcall>
 	</target>
 	
-	<target name="lib-dir" depends="init-dist">
+	<target name="lib-dir" depends="init">
 		<path id="lib.path">
 			<fileset dir="${lib.dir}">
 				<include name="**/*.jar"/>
