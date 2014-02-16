@@ -281,7 +281,7 @@ Copyright 2011-2012 Todd Shore. Distributed under the Apache License 2.0: See th
 		/>
 	</target>
 	
-	<target name="javadocs-create">
+	<target name="javadocs-create" depends="init-javadocs,external-libs">
 		<!-- Create a Javadoc for the source code. -->
 		<javadoc access="${javadoc.access}"
 			author="${javadoc.author}" 
