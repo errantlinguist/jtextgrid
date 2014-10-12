@@ -18,12 +18,12 @@ package com.github.errantlinguist.io;
 /**
  * An interface for classes which print information from a given object.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11 
+ * 
  * @param <T>
  *            The type of object to print.
- * 
- * @since 2014-02-11
- * @version 2014-02-11
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public interface Printer<T> {

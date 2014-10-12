@@ -18,14 +18,14 @@ package com.github.errantlinguist.io;
 /**
  * A parser which parses input into a given type.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2011-07-06
+ * 
  * @param <I>
  *            The data type to be parsed.
  * @param <O>
  *            The object type representing the input data.
- * 
- * @since 2011-07-06
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public interface Parser<I, O> {

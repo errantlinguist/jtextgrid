@@ -1,5 +1,5 @@
 /*
- * 	Copyright 2013 Todd Shore
+ * 	Copyright 2013--2014 Todd Shore
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ package com.github.errantlinguist;
  * A utility class for miscellaneous methods for {@link Class class}-related
  * meta-information.
  * 
- * @author <a href="mailto:errantlinguist@gmail.com">Todd Shore</a>
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2013-10-03
+ * @since 2013-10-03
  */
 public final class ClassName {
 

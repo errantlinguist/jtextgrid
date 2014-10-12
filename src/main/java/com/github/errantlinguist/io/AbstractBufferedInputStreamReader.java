@@ -24,16 +24,15 @@ import java.io.InputStreamReader;
  * An abstract file reader class which reads in data from an {@link InputStream}
  * and transforms the input into an object of a given generic type.
  * 
- * 
- * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2014-02-06
+ *
  * @param <O>
  *            The object type representing the input data.
  * @param <E>
  *            A {@link Throwable} type thrown by the non-abstract derived class.
- * 
- * @since 2014-02-06
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ *
  */
 public abstract class AbstractBufferedInputStreamReader<O, E extends Throwable>
 		implements com.github.errantlinguist.io.InputStreamReader<O, E> {

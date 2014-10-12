@@ -45,20 +45,18 @@ public class PrintingTextGridFileReader<D> extends
 		PrintingForwardingFileSystemReader<TextGridFile<D>, ParseException> {
 
 	/**
-	 * @param args
-	 * @throws IOException
-	 * @throws ParseException
+	 * @param args The command-line arguments.
 	 */
-	public static void main(final String[] args) throws IOException,
-			ParseException {
+	public static void main(final String[] args) {
 		if (args.length != 1) {
 			printUsage();
 			System.exit(64);
 		} else {
 			final String inpath = args[0];
+			// Use the system standard output stream for both the program output and any error information from the reader/parser
 			final PrintStream out = System.out;
 			try {
-			process(inpath, out, out);
+				process(inpath, out, out);
 			} catch (final FileNotFoundException e) {
 				final String message = e.getMessage();
 				System.err.println(message);
@@ -67,16 +65,30 @@ public class PrintingTextGridFileReader<D> extends
 				final String message = e.getMessage();
 				System.err.println(message);
 				System.exit(74);
+			} catch (final ParseException e) {
+				final String message = e.getMessage();
+				System.err.println(message);
+				System.exit(74);
 			}
 		}
 
 	}
 
+	/**
+	* Prints program usage information to the system standard error output stream.
+	*/
 	private static final void printUsage() {
 		final String mainClassName = ClassName.getMainClassName();
 		System.err.println(String.format("Usage: %s <infile>", mainClassName));
 	}
 
+	/**
+	* Reads a TextGrid file or files at a given path and prints its/their contents to the given output {@link PrintStream}.
+	*
+	* @param inpath The path to read.
+	* @param out The {@code PrintStream} to print the TextGrid file contents to.
+	* @param err The {@code PrintStream} to print error messages to.
+	*/
 	private static final void process(final String inpath,
 			final PrintStream out, final PrintStream err) throws IOException,
 			ParseException {
@@ -86,9 +98,7 @@ public class PrintingTextGridFileReader<D> extends
 		final PrintingTextGridFileReader<String> reader = new PrintingTextGridFileReader<String>(
 				err, parser, printer);
 
-		// System.err.println(String.format("Reading path \"%s\"...", inpath));
 		reader.readPath(inpath);
-		// System.err.println("Finished reading path.");
 	}
 
 	/**

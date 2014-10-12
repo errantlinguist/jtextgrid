@@ -1,5 +1,5 @@
 /*
- * 	Copyright 2012 Todd Shore
+ * 	Copyright 2013--2014 Todd Shore
  *
  *	Licensed under the Apache License, Version 2.0 (the "License");
  *	you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@ import java.util.Map.Entry;
 /**
  * A utility class for {@link Thread} objects.
  * 
- * @author <a href="mailto:errantlinguist@gmail.com">Todd Shore</a>
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2013-10-03
  * @since 2013-10-03
  * 
  */

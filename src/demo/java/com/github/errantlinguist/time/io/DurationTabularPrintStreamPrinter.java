@@ -17,7 +17,7 @@ package com.github.errantlinguist.time.io;
 
 import java.io.PrintStream;
 
-import com.github.errantlinguist.StandardSystemProperty;
+import com.google.common.base.StandardSystemProperty;
 import com.github.errantlinguist.io.Printer;
 import com.github.errantlinguist.time.Duration;
 
@@ -25,40 +25,43 @@ import com.github.errantlinguist.time.Duration;
  * A {@link Printer} which prints {@link Duration} objects using a given
  * {@link PrintStream} in a tabular format.
  * 
- * @since 2014-02-11
- * @version 2014-02-11
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11
  * 
  */
 public class DurationTabularPrintStreamPrinter implements Printer<Duration<?>> {
 
+	/**
+	* The default table column separator.
+	*/
 	private static final CharSequence DEFAULT_COLUMN_SEPARATOR = "\t";
-	private static final CharSequence DEFAULT_ROW_SEPARATOR = StandardSystemProperty.LINE_SEPARATOR
-			.value();
 
+	/**
+	* The table column separator.
+	*/
 	private final CharSequence columnSeparator;
 
+	/**
+	* The {@link PrintStream} to print to.
+	*/
 	private final PrintStream out;
 
-	// private final CharSequence rowSeparator;
-
+	/**
+	* @param out The {@link PrintStream} to print to.
+	*/
 	public DurationTabularPrintStreamPrinter(final PrintStream out) {
-		this(out, DEFAULT_COLUMN_SEPARATOR, DEFAULT_ROW_SEPARATOR);
-	}
-
-	public DurationTabularPrintStreamPrinter(final PrintStream out,
-			final CharSequence columnSeparator) {
-		this(out, columnSeparator, DEFAULT_ROW_SEPARATOR);
+		this(out, DEFAULT_COLUMN_SEPARATOR);
 	}
 
 	/**
-	 * 
-	 */
+	* @param out The {@link PrintStream} to print to.
+	* @param columnSeparator The table column separator.
+	*/
 	public DurationTabularPrintStreamPrinter(final PrintStream out,
-			final CharSequence columnSeparator, final CharSequence rowSeparator) {
+			final CharSequence columnSeparator) {
 		this.out = out;
 		this.columnSeparator = columnSeparator;
-		// this.rowSeparator = rowSeparator;
 	}
 
 	@Override

@@ -18,7 +18,7 @@ package com.github.errantlinguist.textgrid.io;
 import java.io.PrintStream;
 import java.util.ListIterator;
 
-import com.github.errantlinguist.StandardSystemProperty;
+import com.google.common.base.StandardSystemProperty;
 import com.github.errantlinguist.io.Printer;
 import com.github.errantlinguist.textgrid.BasicEntry;
 import com.github.errantlinguist.textgrid.Entry;
@@ -39,23 +39,54 @@ import com.github.errantlinguist.tree.ChildList;
 public class NamedTierTabularPrintStreamPrinter<D> implements
 		Printer<NamedTier<D>> {
 
+	/**
+	* The default table column separator.
+	*/
 	private static final CharSequence DEFAULT_COLUMN_SEPARATOR = "\t";
+	
+	/**
+	* The default table row separator.
+	*/	
 	private static final CharSequence DEFAULT_ROW_SEPARATOR = StandardSystemProperty.LINE_SEPARATOR
 			.value();
 
+	/**
+	* The table column separator.
+	*/
 	private final CharSequence columnSeparator;
 
+	/**
+	 * The {@link Printer} used for printing {@link Duration durations}.
+	 */	
 	private final Printer<Duration<?>> durationPrinter;
+	
+	/**
+	 * The {@link Printer} used for printing {@link Entry TextGrid file entries}.
+	 */		
 	private final Printer<? super Entry<D>> entryPrinter;
 
+	/**
+	* The {@link PrintStream} to print to.
+	*/
 	private final PrintStream out;
 
+	/**
+	* The table row separator.
+	*/
 	private final CharSequence rowSeparator;
 
+	/**
+	 * @param out The {@link PrintStream} to print to.
+	 */
 	public NamedTierTabularPrintStreamPrinter(final PrintStream out) {
 		this(out, new EntryTabularPrintStreamPrinter<D>(out));
 	}
 
+	/**
+	 * @param out The {@link PrintStream} to print to.
+	 * @param columnSeparator The table column separator.
+	 * @param rowSeparator The table row separator.
+	 */
 	public NamedTierTabularPrintStreamPrinter(final PrintStream out,
 			final CharSequence columnSeparator, final CharSequence rowSeparator) {
 		this(out, columnSeparator, rowSeparator,
@@ -63,7 +94,10 @@ public class NamedTierTabularPrintStreamPrinter<D> implements
 	}
 
 	/**
-	 * 
+	 * @param out The {@link PrintStream} to print to.
+	 * @param columnSeparator The table column separator.
+	 * @param rowSeparator The table row separator.	 
+	 * @param entryPrinter The {@link Printer} used for printing {@link Entry TextGrid file entries}.
 	 */
 	public NamedTierTabularPrintStreamPrinter(final PrintStream out,
 			final CharSequence columnSeparator,
@@ -77,6 +111,10 @@ public class NamedTierTabularPrintStreamPrinter<D> implements
 				columnSeparator, rowSeparator);
 	}
 
+	/**
+	 * @param out The {@link PrintStream} to print to.
+	 * @param entryPrinter The {@link Printer} used for printing {@link Entry TextGrid file entries}.
+	 */
 	public NamedTierTabularPrintStreamPrinter(final PrintStream out,
 			final Printer<? super Entry<D>> entryPrinter) {
 		this(out, DEFAULT_COLUMN_SEPARATOR, DEFAULT_ROW_SEPARATOR, entryPrinter);
@@ -100,12 +138,16 @@ public class NamedTierTabularPrintStreamPrinter<D> implements
 				out.print("Entry " + index);
 				out.print(rowSeparator);
 				entryPrinter.print(entry);
-				// Entry printer already prints a new row
+				// The Entry printer already prints a new row, so no need to print one here
 			}
 		}
 
 	}
 
+
+	/**
+	* @param output The {@link Duration} to print.
+	*/
 	private void print(final Duration<?> output) {
 		out.print("Duration:");
 		out.print(columnSeparator);

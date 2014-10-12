@@ -24,12 +24,12 @@ import com.google.common.collect.ForwardingListIterator;
  * A subclass of {@link ForwardingListIterator} which holds a reference to
  * {@link #delegate() the iterator it delegates to}.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-10
+ * @since 2014-02-10
+ *
  * @param <E>
  *            The type of the elements to be iterated.
- * 
- * @since 2014-02-10
- * @version 2014-02-10
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public class DelegateListIteratorHolder<E> extends ForwardingListIterator<E> {

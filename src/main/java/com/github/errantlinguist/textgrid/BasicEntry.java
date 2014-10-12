@@ -23,16 +23,14 @@ import com.github.errantlinguist.time.ImmutableDoubleDuration;
 import com.github.errantlinguist.tree.BasicMutableChild;
 
 /**
- * A single entry in the TextGrid file, representing either an interval or a
- * point on a tier.
+ * A basic implementation of {@link Entry}.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2011-04-15
+ *
  * @param <D>
  *            The object type representing the entry data.
- * 
- * @since 2011-04-15
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
- * 
  * 
  */
 public final class BasicEntry<D> extends BasicMutableChild<NamedTier<D>>
@@ -131,31 +129,6 @@ public final class BasicEntry<D> extends BasicMutableChild<NamedTier<D>>
 		return data;
 	}
 
-	// /*
-	// * (non-Javadoc)
-	// *
-	// * @see java.lang.Object#hashCode()
-	// */
-	// @Override
-	// public int hashCode() {
-	// final int prime = 31;
-	// int result = super.hashCode();
-	// result = (prime * result) + (data == null ? 0 : data.hashCode());
-	// // If the tier is not null, combine the hash of the entry's index with
-	// // the
-	// // hash in order to differentiate entries which are equal in all ways
-	// // except for the tier they are on.
-	// final Integer id;
-	// if (parent != null) {
-	// id = getIndex();
-	// result = (prime * result) + (id == null ? 0 : id.hashCode());
-	// } else {
-	// id = result = prime * result;
-	// }
-	//
-	// return result;
-	// }
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -217,16 +190,4 @@ public final class BasicEntry<D> extends BasicMutableChild<NamedTier<D>>
 				.equals(getData(), other.getData()));
 	}
 
-	// private final int compareParentTo(final Entry<D> o) {
-	// final int result;
-	// final NamedTier<D> parent1 = getParent();
-	// final NamedTier<D> parent2 = o.getParent();
-	// if ((parent1 == null) && (parent2 == null)) {
-	// result = 0;
-	// } else {
-	// result = parent1.compareTo(parent2);
-	// }
-	//
-	// return result;
-	// }
 }

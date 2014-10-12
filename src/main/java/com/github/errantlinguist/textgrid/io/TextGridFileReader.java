@@ -34,13 +34,14 @@ import com.github.errantlinguist.textgrid.TierClass;
  * href="http://www.fon.hum.uva.nl/praat/">Praat</a> TextGrid files and parses
  * the data contained therein.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2011-04-15
+ * 
  * @param <D>
  *            The type representing each datum stored in the result
  *            <code>TextGridFile</code> object.
  * 
- * @since 2011-04-15
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  */
 public class TextGridFileReader<D> extends
 		AbstractBufferedInputStreamReader<Boolean, ParseException> implements

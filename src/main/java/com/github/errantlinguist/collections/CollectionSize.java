@@ -21,10 +21,9 @@ import java.util.Collections;
 /**
  * A utility class for manipulating the size of {@link Collection} objects.
  * 
- * 
- * @since 2013-10-15
- * @version 2013-10-15
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2013-10-15
+ * @since 2013-10-15
  * 
  */
 public final class CollectionSize {

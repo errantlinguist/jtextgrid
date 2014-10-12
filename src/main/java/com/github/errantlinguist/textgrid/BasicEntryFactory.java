@@ -26,12 +26,12 @@ import com.github.errantlinguist.tree.ChildList;
 /**
  * A {@link Factory} which creates {@link BasicEntry} objects.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ *  @version 2014-02-06
+ * @since 2014-02-06
+ *
  * @param <D>
  *            The type of the annotation data.
- * 
- * @since 2014-02-06
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public class BasicEntryFactory<D> extends BasicMutableChild<NamedTier<D>>

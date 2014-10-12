@@ -18,9 +18,9 @@ package com.github.errantlinguist;
 /**
  * An interface for classes, the state of which can be {@link #clear() cleared}.
  * 
- * @since 2014-02-06
- * @version 2014-02-06
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2014-02-06
  * 
  */
 public interface Clearable {

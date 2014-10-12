@@ -22,10 +22,9 @@ import java.util.Set;
 /**
  * A utility class for processing {@link Set} elements.
  * 
- * 
- * @since 2014-02-07
- * @version 2014-02-07
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-07
+ * @since 2014-02-07
  * 
  */
 public final class SetElements {

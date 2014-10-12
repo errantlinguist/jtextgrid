@@ -29,10 +29,9 @@ import java.util.TreeSet;
 /**
  * A utility class for manipulating {@link List} indices.
  * 
- * 
- * @since 2013-10-22
- * @version 2013-10-22
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2013-10-22
+ * @since 2013-10-22
  * 
  */
 public final class ListIndex {

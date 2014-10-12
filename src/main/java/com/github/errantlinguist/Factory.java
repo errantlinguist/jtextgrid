@@ -20,12 +20,12 @@ package com.github.errantlinguist;
  * type (it need not necessarily be a new instance, depending on the
  * implementation of the interface).
  * 
+  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2014-02-06
+ *
  * @param <T>
  *            The type to be created.
- * 
- * @since 2014-02-06
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public interface Factory<T> {

@@ -28,12 +28,12 @@ import com.github.errantlinguist.textgrid.TextGridFileListenerFactory;
  * A file reader which creates one new {@link TextGridFile} object per file
  * read.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11
+ * 
  * @param <D>
  *            The type of the annotation data.
- * 
- * @since 2014-02-11
- * @version 2014-02-11
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public class TextGridFileFactoryReader<D> implements

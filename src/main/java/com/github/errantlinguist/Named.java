@@ -19,14 +19,14 @@ under the License.
 package com.github.errantlinguist;
 
 /**
- * An interface for objects which have a name
+ * An interface for objects which have a name.
  * 
- * @param <N>
- *            The name type.
- * 
- * @since 2014-02-11
- * @version 2014-02-11
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2014-02-11
+ *
+ * @param <N>
+ *            The name type. 
  * 
  */
 public interface Named<N> {

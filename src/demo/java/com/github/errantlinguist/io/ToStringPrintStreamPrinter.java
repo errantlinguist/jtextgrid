@@ -22,10 +22,9 @@ import java.io.Serializable;
  * A {@link Printer} which simply prints the string representation of the object
  * to print.
  * 
- * @since 2012-01-16
- * @version 2014-02-06
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
- * 
+ * @version 2014-02-06
+ * @since 2012-01-16
  * 
  */
 public final class ToStringPrintStreamPrinter implements Printer<Object>,

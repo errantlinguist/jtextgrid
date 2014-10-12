@@ -30,14 +30,15 @@ import java.util.Queue;
  * An abstract file reader class which reads in a data file or a directory of
  * files, parses it/them, and returns an object representing the data therein.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-05
+ * @since 2011-07-06
+ * 
  * @param <O>
  *            The object type representing the file data.
  * @param <E>
  *            A {@link Throwable} type thrown by the non-abstract derived class.
  * 
- * @since 2011-07-06
- * @version 2014-02-05
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  */
 public abstract class AbstractFileSystemReader<O, E extends Throwable>
 		implements InputStreamReader<O, E> {

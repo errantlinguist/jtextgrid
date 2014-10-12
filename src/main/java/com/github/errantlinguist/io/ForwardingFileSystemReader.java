@@ -19,10 +19,17 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * A subclass of {@link AbstractFileSystemReader} which delegates file-reading functionality to a given {@link InputStreamReader}.
+ *
  * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * @version 2014-02-11
  * @since 2014-02-11
  * 
+ * @param <O>
+ *            The object type representing the file data.
+ * @param <E>
+ *            A {@link Throwable} type thrown by the non-abstract derived class.
+ *  
  */
 public class ForwardingFileSystemReader<O, E extends Throwable> extends
 		AbstractFileSystemReader<O, E> {

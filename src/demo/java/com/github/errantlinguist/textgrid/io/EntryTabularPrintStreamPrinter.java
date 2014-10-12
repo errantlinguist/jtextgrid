@@ -17,7 +17,7 @@ package com.github.errantlinguist.textgrid.io;
 
 import java.io.PrintStream;
 
-import com.github.errantlinguist.StandardSystemProperty;
+import com.google.common.base.StandardSystemProperty;
 import com.github.errantlinguist.io.Printer;
 import com.github.errantlinguist.io.ToStringPrintStreamPrinter;
 import com.github.errantlinguist.textgrid.Entry;
@@ -36,23 +36,54 @@ import com.github.errantlinguist.time.io.DurationTabularPrintStreamPrinter;
 public class EntryTabularPrintStreamPrinter<D> implements
 		Printer<Entry<? extends D>> {
 
+	/**
+	* The default table column separator.
+	*/
 	private static final CharSequence DEFAULT_COLUMN_SEPARATOR = "\t";
+	
+	/**
+	* The default table row separator.
+	*/	
 	private static final CharSequence DEFAULT_ROW_SEPARATOR = StandardSystemProperty.LINE_SEPARATOR
 			.value();
 
+	/**
+	* The table column separator.
+	*/
 	private final CharSequence columnSeparator;
 
+	/**
+	 * The {@link Printer} used for printing entry annotation data.
+	 */
 	private final Printer<? super D> dataPrinter;
+
+	/**
+	 * The {@link Printer} used for printing {@link Duration durations}.
+	 */	
 	private final Printer<Duration<?>> durationPrinter;
 
+	/**
+	* The {@link PrintStream} to print to.
+	*/
 	private final PrintStream out;
 
+	/**
+	* The table row separator.
+	*/
 	private final CharSequence rowSeparator;
 
+	/**
+	 * @param out The {@link PrintStream} to print to.
+	 */
 	public EntryTabularPrintStreamPrinter(final PrintStream out) {
 		this(out, new ToStringPrintStreamPrinter(out));
 	}
 
+	/**
+	 * @param out The {@link PrintStream} to print to.
+	 * @param columnSeparator The table column separator.
+	 * @param rowSeparator The table row separator.
+	 */
 	public EntryTabularPrintStreamPrinter(final PrintStream out,
 			final CharSequence columnSeparator, final CharSequence rowSeparator) {
 		this(out, columnSeparator, rowSeparator,
@@ -60,7 +91,10 @@ public class EntryTabularPrintStreamPrinter<D> implements
 	}
 
 	/**
-	 * 
+	 * @param out The {@link PrintStream} to print to.
+	 * @param columnSeparator The table column separator.
+	 * @param rowSeparator The table row separator.	 
+	 * @param dataPrinter The {@link Printer} used for printing entry annotation data.
 	 */
 	public EntryTabularPrintStreamPrinter(final PrintStream out,
 			final CharSequence columnSeparator,
@@ -74,6 +108,10 @@ public class EntryTabularPrintStreamPrinter<D> implements
 				columnSeparator, rowSeparator);
 	}
 
+	/**
+	 * @param out The {@link PrintStream} to print to.
+	 * @param dataPrinter The {@link Printer} used for printing entry annotation data.
+	 */
 	public EntryTabularPrintStreamPrinter(final PrintStream out,
 			final Printer<? super D> dataPrinter) {
 		this(out, DEFAULT_COLUMN_SEPARATOR, DEFAULT_ROW_SEPARATOR, dataPrinter);
@@ -89,12 +127,18 @@ public class EntryTabularPrintStreamPrinter<D> implements
 
 	}
 
+	/**
+	* @param output The {@link Duration} to print.
+	*/
 	private void print(final Duration<?> output) {
 		out.print("Duration:");
 		out.print(columnSeparator);
 		durationPrinter.print(output);
 	}
 
+	/**
+	* @param output The entry annotation data to print.
+	*/
 	private void printData(final D output) {
 		out.print("Data:");
 		out.print(columnSeparator);

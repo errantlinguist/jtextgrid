@@ -31,8 +31,14 @@ import java.util.Map;
 public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
 		ForwardingFileSystemReader<O, E> {
 
+	/**
+	* A default {@link Map} of {@link Hook hooks} to the format string used to format messages to be printed when calling the given hook.
+	*/
 	private static final Map<Hook, String> DEFAULT_HOOK_MESSAGE_FORMAT_STRS = createDefaultHookMessageFormatStrMap();
 
+	/**
+	* @return A new {@link Map} of {@link Hook hooks} to the format string used to format messages to be printed when calling the given hook.
+	*/
 	private static final Map<Hook, String> createDefaultHookMessageFormatStrMap() {
 		final Map<Hook, String> result = new EnumMap<Hook, String>(Hook.class);
 
@@ -55,6 +61,9 @@ public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
 		return result;
 	}
 
+	/**
+	* A {@link Map} of {@link Hook hooks} to the format string used to format messages to be printed when calling the given hook.
+	*/
 	private Map<Hook, String> hookMessageFormatStrs;
 
 	/**
@@ -69,6 +78,7 @@ public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
 
 	/**
 	* @param out The {@link PrintStream} to print to.
+	* @param reader The {@link InputStreamReader} to delegate stream-reading requests to.
 	*/
 	public PrintingForwardingFileSystemReader(final PrintStream out,
 			final InputStreamReader<O, E> reader) {
@@ -77,6 +87,8 @@ public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
 
 	/**
 	* @param out The {@link PrintStream} to print to.
+	* @param reader The {@link InputStreamReader} to delegate stream-reading requests to.	
+	* @param hookMessageFormatStrs A {@link Map} of {@link Hook hooks} to the format string used to format messages to be printed when calling the given hook.
 	*/
 	public PrintingForwardingFileSystemReader(final PrintStream out,
 			final InputStreamReader<O, E> reader,
@@ -86,6 +98,11 @@ public class PrintingForwardingFileSystemReader<O, E extends Throwable> extends
 		this.hookMessageFormatStrs = hookMessageFormatStrs;
 	}
 
+	/**
+	* Prints a message for a given {@link Hook} to the object's designated {@link #out output stream}.
+	* @param hook The {@code Hook} to print a message for.
+	* @param args The arguments passed to the hook method.
+	*/
 	private void print(final Hook hook, final Object... args) {
 		final String hookMessageFormatStr = hookMessageFormatStrs.get(hook);
 		if (hookMessageFormatStr != null) {

@@ -21,8 +21,8 @@ import java.io.Serializable;
  * An exception representing an error while parsing input.
  * 
  * @author Todd Shore <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
- * @since 2014-02-06
  * @version 2014-02-06
+ * @since 2014-02-06
  * 
  */
 public class ParseException extends Exception {

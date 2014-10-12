@@ -21,16 +21,17 @@ import java.io.InputStream;
 
 /**
  * An interface for classes which which read a {@link FileInputStream}, and
- * returns an object representing the data therein.
+ * returns an object representing the data therein. Unfortunately, the most descriptive name for this interface clashes with that of {@link java.io.InputStreamReader a class in the Java standard library}; The two are related but only in that they both read in data from {@link InputStream} objects.
+ * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-11
+ * @since 2011-07-11
  * 
  * @param <O>
  *            The object type representing the file data.
  * @param <E>
  *            A {@link Throwable} type thrown by the non-abstract derived class.
  * 
- * @since 2011-07-11
- * @version 2014-02-11
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  */
 public interface InputStreamReader<O, E extends Throwable> {
 

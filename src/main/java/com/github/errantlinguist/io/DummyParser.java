@@ -20,15 +20,12 @@ import java.io.Serializable;
 /**
  * A {@link Parser} which returns the same input it parses.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-06
+ * @since 2012-01-16
+ * 
  * @param <T>
  *            The data type to be parsed and returned.
- * 
- * @since 2012-01-16
- * @version 2014-02-06
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
- * 
- * 
- * 
  * 
  */
 public final class DummyParser<T> implements Parser<T, T>, Serializable {

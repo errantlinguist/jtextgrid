@@ -24,12 +24,12 @@ import com.google.common.collect.ForwardingList;
  * A subclass of {@link ForwardingList} which holds a reference to
  * {@link #delegate() the list it delegates to}.
  * 
+ * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
+ * @version 2014-02-10
+ * @since 2014-02-10
+ *
  * @param <E>
  *            The type of the elements in the list.
- * 
- * @since 2014-02-10
- * @version 2014-02-10
- * @author <a href="mailto:errantlinguist+github@gmail.com">Todd Shore</a>
  * 
  */
 public class DelegateListHolder<E> extends ForwardingList<E> {
