@@ -14,4 +14,4 @@ Requirements
 	
 Example code
 --------------------------------------------------------------------------------
-For an example of how to use JTextGrid in your own project, see the main method of com.github.errantlinguist.textgrid.io.PrintingTextGridFileReader (under the soure folder "src/demo/java"), which is used to run the demo.
+For an example of how to use JTextGrid in your own project, see the main method of com.github.errantlinguist.textgrid.io.PrintingTextGridFileReader (under the soure folder "src/demo/java/com/github/errantlinguist/textgrid/io/"), which is used to run the demo.
