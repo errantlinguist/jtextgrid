@@ -5,7 +5,7 @@ A library for processing TextGrid files used by the [Praat phonetic analysis sof
 * **Version:** 2014-02-15
 * **Author:** Todd Shore
 * **Website:** https://github.com/errantlinguist/jtextgrid
-* **Licensing:** Copyright &copy; 2011&ndash;2014 Todd Shore. Licensed for distribution under the Apache License 2.0: See the files `NOTICE.txt` and `LICENSE.txt`.
+* **Licensing:** Copyright &copy; 2011&ndash;2014 Todd Shore. Licensed for distribution under the Apache License 2.0: See the files `NOTICE` and `LICENSE`.
 
 Requirements
 --------------------------------------------------------------------------------
